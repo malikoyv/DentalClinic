@@ -6,10 +6,10 @@
     	header("location:login.php");
     }
 
-    echo '<br> <a href="todo.php" align="right" style="color: red; text-decoration: none">&nbsp; My Todos </a>';
+    echo '<br> <a href="index.php" align="right" style="color: red; text-decoration: none">&nbsp; My Todos </a>';
 
-	$username = $_SESSION['username'];
-	echo "<br> <center id='user'> Welcome ".ucwords($username)."</center> <br>";
+	$email = $_SESSION['email'];
+	echo "<br> <center id='user'> Welcome ".ucwords($email)."</center> <br>";
 
     error();
 	if(isset($_POST['change']))
@@ -18,14 +18,14 @@
 		$new = $_POST['newpass'];
 
 		$conn = connectdatabase();
-	    $sql = "SELECT password FROM users WHERE username = '".$username."'"; 
+	    $sql = "SELECT password FROM users WHERE email = '".$email."'"; 
 	    $result = mysqli_query($conn,$sql);
 
     	$row = mysqli_fetch_assoc($result);
 	    $actual = $row['password'];
 	   
 	   	if(strcmp($old,$actual)==0) {
-	   		updatepassword($username, $new);
+	   		updatepassword($email, $new);
 	   	}
 	   	else {
 	   		$_SESSION['error'] = "&nbsp; Invalid old password !!";

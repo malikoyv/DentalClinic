@@ -19,7 +19,7 @@
             $tasks = $_POST['check_list'];
             $length = count($tasks);
             for ($i = 0; $i < $length; $i++) {
-                deleteTodoItem($_SESSION['username'], $tasks[$i]);
+                deleteTodoItem($_SESSION['email'], $tasks[$i]);
             }
         }
     }
@@ -47,12 +47,12 @@
     }
 
     function loggedin() {
-        return isset($_SESSION['username']);
+        return isset($_SESSION['email']);
     }
 
     function logout() {
         $_SESSION['error'] = "&nbsp; Succesfully logout !!";
-        unset($_SESSION['username']);
+        unset($_SESSION['email']);
     }
 
     function spaces($n) {
@@ -60,10 +60,10 @@
             echo "&nbsp;";
     }
 
-    function userexist($username) 
+    function userexist($email) 
     {
         $conn = connectdatabase();
-        $sql = "SELECT * FROM todo.users WHERE username = '".$username."'"; 
+        $sql = "SELECT * FROM todo.users WHERE email = '".$email."'"; 
         $result = mysqli_query($conn,$sql);
         mysqli_close($conn);
 
@@ -73,10 +73,10 @@
         return true;
     }
 
-    function validuser($username, $password) 
+    function validuser($email, $password) 
     {
         $conn = connectdatabase();
-        $sql = "SELECT * FROM todo.users WHERE username = '".$username."'AND password = '".$password."'"; 
+        $sql = "SELECT * FROM todo.users WHERE email = '".$email."'AND password = '".$password."'"; 
         $result = mysqli_query($conn,$sql);
         mysqli_close($conn);
 
@@ -94,61 +94,61 @@
         }
     }
 
-    function updatepassword($username, $password) {
+    function updatepassword($email, $password) {
         $conn = connectdatabase();
-        $sql = "UPDATE todo.users SET password = '".$password."' WHERE username = '".$username."';";
+        $sql = "UPDATE todo.users SET password = '".$password."' WHERE email = '".$email."';";
         $result = mysqli_query($conn, $sql);
 
         $_SESSION['error'] = "<br> &nbsp; Password Updated !! ";
-        header('location:todo.php');
+        header('location:index.php');
     }
 
-    function deleteaccount($username) {
+    function deleteaccount($email) {
         $conn = connectdatabase();
-        $sql = "DELETE FROM todo.tasks WHERE username = '".$username."';";
+        $sql = "DELETE FROM todo.tasks WHERE email = '".$email."';";
         $result = mysqli_query($conn, $sql);
 
-        $sql = "DELETE FROM todo.users WHERE username = '".$username."';";
+        $sql = "DELETE FROM todo.users WHERE email = '".$email."';";
         $result = mysqli_query($conn, $sql);
 
         $_SESSION['error'] = "&nbsp; Account Deleted !! ";
-        unset($_SESSION['username']);
+        unset($_SESSION['email']);
         header('location:login.php');
     }
 
-    function createUser($username, $password)
+    function createUser($email, $password)
     {
-        if(!userexist($username))
+        if(!userexist($email))
         {
             $conn = connectdatabase();
-            $sql = "INSERT INTO todo.users (username, password) VALUES ('".$username."','".$password."')";
+            $sql = "INSERT INTO todo.users (email, password) VALUES ('".$email."','".$password."')";
             $result = mysqli_query($conn, $sql);
 
-            $_SESSION["username"] = $username;
-            header('location:todo.php');
+            $_SESSION["email"] = $email;
+            header('location:index.php');
         }
         else
         {
-            $_SESSION['error'] = "&nbsp; Username already exists !! ";
+            $_SESSION['error'] = "&nbsp; email already exists !! ";
             header('location:newuser.php');
         }
     }
     
-    function isValid($username, $password, $usercaptcha)
+    function isValid($email, $password, $usercaptcha)
     {
         $conn = connectdatabase();
         $capcode = $_SESSION['captcha'];
 
         if(!strcmp($usercaptcha,$capcode))
         {
-            if(validuser($username, $password))
+            if(validuser($email, $password))
             {
-                $_SESSION["username"] = $username;
-                header('location:todo.php');
+                $_SESSION["email"] = $email;
+                header('location:index.php');
             }
             else
             {
-                $_SESSION['error'] = "&nbsp; Invalid Username or Password !! ";
+                $_SESSION['error'] = "&nbsp; Invalid email or Password !! ";
                 header('location:login.php');
             }
             mysqli_close($conn);
@@ -160,10 +160,10 @@
         }
     }
     
-    function getTodoItems($username) {
+    function getTodoItems($email) {
 
         $conn = connectdatabase();
-        $sql = "SELECT * FROM tasks WHERE username = '".$username."'";
+        $sql = "SELECT * FROM tasks WHERE email = '".$email."'";
         
         $result = mysqli_query($conn, $sql);
 
@@ -193,18 +193,18 @@
         mysqli_close($conn);
     }
 
-    function addTodoItem($username, $todo_text) 
+    function addTodoItem($email, $todo_text) 
     {
         $conn = connectdatabase();
-        $sql = "INSERT INTO todo.tasks(username, task, done) VALUES ('".$username."','".$todo_text."',0);";
+        $sql = "INSERT INTO todo.tasks(email, task, done) VALUES ('".$email."','".$todo_text."',0);";
         $result = mysqli_query($conn, $sql);
         mysqli_close($conn);
     }
     
-    function deleteTodoItem($username, $todo_id) 
+    function deleteTodoItem($email, $todo_id) 
     {
         $conn = connectdatabase();
-        $sql = "DELETE FROM todo.tasks WHERE taskid = ".$todo_id." and username = '".$username."';";
+        $sql = "DELETE FROM todo.tasks WHERE taskid = ".$todo_id." and email = '".$email."';";
         $result = mysqli_query($conn, $sql);
         mysqli_close($conn);
     }

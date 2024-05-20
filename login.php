@@ -2,7 +2,7 @@
     include('default.html');
     include('database.php');
     if(loggedin()) {
-        header("location:todo.php");
+        header("location:index.php");
     }
 ?>
 
@@ -24,8 +24,8 @@
             <table>
                 <tbody>
                     <tr>
-                         <td> <pre>Name </pre> </td>
-                         <td> <input size="25" type="text" name="username" placeholder=" your_username"  autocomplete="on" required></td>
+                         <td> <pre>Email </pre> </td>
+                         <td> <input size="25" type="text" name="email" placeholder=" example@email.com"  autocomplete="on" required></td>
                     </tr>
                     <tr>
                          <td> <pre>Password </pre> </td>

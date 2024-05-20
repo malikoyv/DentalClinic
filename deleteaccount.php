@@ -3,7 +3,7 @@
 	include('database.php');
 
 	if(loggedin()) {
-		deleteaccount($_SESSION['username']);
+		deleteaccount($_SESSION['email']);
 	}
 	header("location:login.php");
  ?>

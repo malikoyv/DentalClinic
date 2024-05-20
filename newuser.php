@@ -3,7 +3,7 @@
     include('database.php');
 
     if(loggedin()) {
-        header("location:todo.php");
+        header("location:index.php");
     }
 ?>
 
@@ -24,15 +24,15 @@
                 <table>
                     <tr>
                         <td> <pre>User Name </pre> </td>
-                        <td> <input type="text" name="username" placeholder=" Your_Username" autocomplete="off"> </td>
+                        <td> <input type="email" name="email" placeholder=" example@email.com" autocomplete="on"> </td>
                     </tr>
                     <tr>
                         <td> <pre>Password </pre> </td>
-                        <td> <input type="password" required name="password1" placeholder=" *******"> </td>
+                        <td> <input type="password" required name="password1" placeholder=" *******" autocomplete="on"> </td>
                     </tr>
                     <tr>
                         <td> <pre>Confirm Password </pre></td>
-                        <td> <input type="password" required name="password2" placeholder=" *******"> </td>
+                        <td> <input type="password" required name="password2" placeholder=" *******" autocomplete="on"> </td>
                     </tr>
                     <tr>
                         <td>
@@ -51,9 +51,7 @@
                     </tr>
                 </table>
             </fieldset>
-
             </center>
-
         </form>
     </body>
 </html>

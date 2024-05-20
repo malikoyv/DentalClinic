@@ -1,9 +1,9 @@
 <?php
     include 'database.php';
     
-    $my_username = $_POST['username']; 
+    $my_email = $_POST['email']; 
     $my_password = $_POST['password']; 
     $my_captcha = $_POST['captcha'];
 
-    isvalid($my_username, $my_password, $my_captcha); 
+    isvalid($my_email, $my_password, $my_captcha); 
 ?>
