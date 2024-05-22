@@ -1,56 +1,51 @@
 <?php
 session_start();
-include 'includes/db.php';
-
-if (!isset($_SESSION['username'])) {
-    header("Location: pages/login.php");
-    exit();
-}
-
-$username = $_SESSION['username'];
-
-$sql = "SELECT tasks.id, tasks.task, tasks.done FROM tasks JOIN users ON tasks.user_id = users.id WHERE users.username = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$tasks = $result->fetch_all(MYSQLI_ASSOC);
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo List</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Dentlux</title>
+    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css' rel='stylesheet'>
+    <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css' rel='stylesheet'>
+    <link rel="stylesheet" href="/public/css/styles.css">
+    <link rel="stylesheet" href="/ublic/css/index.css">
+    <style>
+        #myVideo {
+            filter: brightness(60%);
+        }
+    </style>
 </head>
+
 <body>
-    <header id="main-header">
-        <h1 class="header-title">Todo List</h1>
-    </header>
-    <main>
-        <section class="task-section">
-            <ul class="task-list">
-                <?php foreach ($tasks as $task): ?>
-                    <li class="task-item <?php echo $task['done'] ? 'done' : 'pending'; ?>">
-                        <?php echo htmlspecialchars($task['task']); ?>
-                        <a href="pages/delete_task.php?id=<?php echo $task['id']; ?>">Delete</a>
-                        <a href="pages/change_status.php?id=<?php echo $task['id']; ?>&status=<?php echo $task['done'] ? 0 : 1; ?>">
-                            <?php echo $task['done'] ? 'Mark as Pending' : 'Mark as Done'; ?>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </section>
-        <a class="logout-btn" href="pages/logout.php">Logout</a>
-        <form action="pages/add_task.php" method="POST">
-            <input type="text" name="task" required>
-            <button type="submit">Add Task</button>
-        </form>
-    </main>
-    <footer>
-        <p>&copy; 2024 Todo List Application</p>
-    </footer>
+    <?php include 'app/views/shared_navbar.php'; ?>
+
+    <div class="container">
+        <div class="row">
+            <h1 class="text-center">DENTLUX</h1>
+            <h2 class="text-center">Profesjonalna opieka dentystyczna</h2>
+            <br>
+            <div class="col-lg-5 p-4">
+                <h2>Zarejestruj się w naszym gabinecie i zarezerwuj swoją pierwszą wizytę!</h2>
+                <br>
+                <a href="/app/views/patient_register.php" class="btn btn-lg btn-primary m-2">Zarejestruj się teraz</a>
+                <a href="/app/views/patient_login.php" class="btn btn-lg btn-secondary m-2">Zaloguj się</a>
+            </div>
+            <div class=" col-lg-7 p-4">
+                <video autoplay muted loop id="myVideo" class="w-100">
+                    <source src="/public/videos/start_video2.mp4" type="video/mp4">
+                    Twoja przeglądarka nie obsługuje tagu video.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
 </body>
+
 </html>
