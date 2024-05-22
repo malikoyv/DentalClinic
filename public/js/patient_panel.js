@@ -34,7 +34,7 @@ function initializeCalendar() {
             },
             // Funkcja, która pobiera wydarzenia z serwera
             events: function (fetchInfo, successCallback, failureCallback) {
-                fetch('app/controllers/get_availability.php')
+                fetch('../../app/controllers/get_availability.php')
                     .then(response => response.json())
                     .then(data => {
                         const events = data.map(item => { // Mapowanie danych z serwera na format wydarzenia
@@ -79,7 +79,7 @@ function initializeCalendar() {
                             patient_id: patientId
                         };
                         // Jeśli użytkownik potwierdził rezerwację, wyślij zapytanie do serwera
-                        fetch('app/controllers/create_appointment.php', {
+                        fetch('../../app/controllers/create_appointment.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -138,7 +138,7 @@ function cancelAppointment(appointmentId) {
         if (result.isConfirmed) {
             // Jeśli użytkownik potwierdził anulowanie wizyty, wyślij zapytanie do serwera
             $.ajax({
-                url: 'app/controllers/patient_cancel_appointment.php',
+                url: '../../app/controllers/patient_cancel_appointment.php',
                 type: 'POST',
                 data: { appointment_id: appointmentId },
                 success: function (response) {
@@ -173,7 +173,7 @@ function loadAppointments(filterStatus = 'scheduled', isInitialLoad = false, fil
     document.getElementById('appointmentsHeader').textContent = 'Wizyty ' + filterText;
     $.ajax({
         // Wysłanie zapytania AJAX do serwera
-        url: 'app/controllers/get_patient_appointments.php',
+        url: '../../app/controllers/get_patient_appointments.php',
         type: 'GET',
         success: function (response) {
             globalAppointments = JSON.parse(response);

@@ -1,14 +1,12 @@
 <!-- 
 **********
-
     Pasek nawigacyjny, który jest wyświetlany na każdej stronie 'shared_navbar.php'.
-
 **********
 -->
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container-fluid">
-        <a class="btn btn-light btn-lg" href="index.php">DENTLUX</a>
+        <a class="btn btn-light btn-lg" href="../../index.php">Poradnia</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -20,12 +18,12 @@
                             Zaloguj się
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="app/views/patient_login.php">Logowanie pacjenta</a>
-                            <a class="dropdown-item" href="app/views/dentist_login.php">Logowanie personelu</a>
+                            <a class="dropdown-item" href="app\views\patient_login.php">Logowanie pacjenta</a>
+                            <a class="dropdown-item" href="app\views\dentist_login.php">Logowanie personelu</a>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-light" href="app/views/patient_register.php">Zarejestruj się!</a>
+                        <a class="btn btn-light" href="patient_register.php">Zarejestruj się!</a>
                     </li>
                 <?php else : ?>
                     <li class="nav-item dropdown">
@@ -38,13 +36,13 @@
                             if (isset($_SESSION['role'])) {
                                 switch ($_SESSION['role']) {
                                     case 'administrator':
-                                        echo '<a class="dropdown-item" href="app/views/admin_panel.php">Panel administratora</a>';
+                                        echo '<a class="dropdown-item" href="admin_panel.php">Panel administratora</a>';
                                         break;
                                     case 'patient':
-                                        echo '<a class="dropdown-item" href="app/views/patient_panel.php">Panel pacjenta</a>';
+                                        echo '<a class="dropdown-item" href="patient_panel.php">Panel pacjenta</a>';
                                         break;
                                     case 'dentist':
-                                        echo '<a class="dropdown-item" href="app/views/dentist_panel.php">Panel dentysty</a>';
+                                        echo '<a class="dropdown-item" href="dentist_panel.php">Panel dentysty</a>';
                                         break;
                                 }
                             }
@@ -85,7 +83,7 @@
                 <?php
                 // Wyświetlenie przycisku wylogowania jeśli użytkownik jest zalogowany
                 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin']) {
-                    echo '<a class="btn btn-light" href="app/controllers/logout_controller.php">Wyloguj się</a>';
+                    echo '<a class="btn btn-light" href="app\controllers\logout_controller.php">Wyloguj się</a>';
                 }
                 ?>
             </span>

@@ -2,7 +2,7 @@
 class Database
 {
     private $host = "localhost";
-    private $db_name = "stomatologia";
+    private $db_name = "clinic";
     private $username = "root";
     private $password = "";
     public $conn;

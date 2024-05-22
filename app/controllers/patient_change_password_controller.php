@@ -9,7 +9,7 @@ session_start();
 
 // Sprawdzenie, czy użytkownik jest zalogowany
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("location: login.php"); // Przekierowanie do strony logowania, jeśli użytkownik nie jest zalogowany
+    header("location: ../views/login.php"); // Przekierowanie do strony logowania, jeśli użytkownik nie jest zalogowany
     exit;
 }
 

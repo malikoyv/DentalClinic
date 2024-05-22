@@ -3,7 +3,7 @@ session_start();
 
 // Sprawdzenie, czy użytkownik jest zalogowany jako dentysta
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'dentist') {
-    header("location: dentist_login.php"); // Przekierowanie do strony logowania dentysty, jeśli użytkownik nie ma uprawnień
+    header("location: ../views/dentist_login.php"); // Przekierowanie do strony logowania dentysty, jeśli użytkownik nie ma uprawnień
     exit;
 }
 

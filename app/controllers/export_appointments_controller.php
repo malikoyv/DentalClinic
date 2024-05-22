@@ -7,7 +7,7 @@ require_once '../models/appointment.php';
 
 // Sprawdzenie, czy użytkownik jest zalogowany i ma uprawnienia dentysty
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'dentist') {
-    header("location: dentist_login.php"); // Przekierowanie do strony logowania, jeśli nie ma uprawnień
+    header("location: ../views/dentist_login.php"); // Przekierowanie do strony logowania, jeśli nie ma uprawnień
     exit;
 }
 

@@ -109,7 +109,7 @@ if (isset($_GET['dentist_id'])) {
                         <input type="text" class="form-control" id="specialization" name="specialization" value="<?php echo htmlspecialchars($dentist_data['specialization']); ?>">
                     </div>
                     <button type="submit" class="btn btn-primary m-1">Potwierdź</button>
-                    <a href="../views/admin_panel.php" class="btn btn-secondary m-1">Anuluj</a>
+                    <a href="admin_panel.php" class="btn btn-secondary m-1">Anuluj</a>
                 </form>
             </div>
         </div>

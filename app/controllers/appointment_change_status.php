@@ -3,7 +3,7 @@
 session_start();
 
 // Wymagane pliki: konfiguracja bazy danych i model 'appointment'
-require_once '../../config/database.php';
+require_once '../config/database.php';
 require_once '../models/appointment.php';
 
 // Sprawdzenie, czy metoda żądania to POST

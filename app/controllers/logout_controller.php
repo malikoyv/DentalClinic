@@ -8,5 +8,5 @@ $_SESSION = array();
 session_destroy();
 
 // Przekierowanie użytkownika do strony głównej
-header("location: index.php");
+header("location: ../../index.php");
 exit; // Zakończenie skryptu

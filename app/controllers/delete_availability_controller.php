@@ -4,7 +4,7 @@ session_start();
 
 // Sprawdzenie czy użytkownik jest zalogowany, jeśli nie to przekierowanie do strony logowania
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'dentist') {
-    header("location: dentist_login.php");
+    header("location: ../views/dentist_login.php");
     exit;
 }
 

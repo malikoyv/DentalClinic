@@ -21,7 +21,7 @@ function cancelAppointment(appointmentId) {
         if (result.isConfirmed) {
             $.ajax({
                 // Wywołanie AJAX do anulowania wizyty
-                url: 'app/controllers/dentist_cancel_appointment.php',
+                url: '../../app/controllers/dentist_cancel_appointment.php',
                 type: 'POST',
                 data: { appointment_id: appointmentId },
                 success: function (response) {
@@ -62,7 +62,7 @@ function changeAppointmentStatus(appointmentId, newStatus) {
         if (result.isConfirmed) {
             $.ajax({
                 // Wysłanie zapytania AJAX do serwera
-                url: 'app/controllers/appointment_change_status.php',
+                url: '../../app/controllers/appointment_change_status.php',
                 type: 'POST',
                 data: { appointment_id: appointmentId, new_status: newStatus },
                 success: function (response) {
@@ -96,7 +96,7 @@ function loadAppointments(filterStatus = 'scheduled', isInitialLoad = false, fil
     document.getElementById('appointmentsHeader').textContent = 'Wizyty ' + filterText;
     $.ajax({
         // Wysłanie zapytania AJAX do serwera
-        url: 'app/controllers/get_dentist_appointments.php',
+        url: '../../app/controllers/get_dentist_appointments.php',
         type: 'GET',
         success: function (response) {
             // Jeśli zapytanie zakończyło się sukcesem to zapisz wizyty do zmiennej globalnej
@@ -175,7 +175,7 @@ function formatAppointmentStatus(status) {
 async function updateAppointmentsStatus() {
     try {
         // Wysłanie zapytania do serwera
-        const response = await fetch('app/controllers/update_appointments_status.php', {
+        const response = await fetch('../../app/controllers/update_appointments_status.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -3,7 +3,7 @@ session_start();
 
 // Sprawdzenie, czy użytkownik jest zalogowany jako administrator
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'administrator') {
-    header("location: login.php"); // Przekierowanie do strony logowania, jeśli użytkownik nie ma uprawnień
+    header("location: ../views/login.php"); // Przekierowanie do strony logowania, jeśli użytkownik nie ma uprawnień
     exit;
 }
 

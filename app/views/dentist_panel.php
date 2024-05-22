@@ -8,7 +8,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
 }
 
 // Zaimportowanie pliku konfiguracyjnego bezy danych, modelu dentist i modelu availability
-require_once '../config/database.php';
+require_once '../../config/database.php';
 require_once '../models/dentist.php';
 require_once '../models/availability.php';
 
@@ -44,7 +44,7 @@ if (in_array($lastChar, ['a', 'e', 'i', 'o', 'u', 'y'])) {
     $greeting = "Dzień dobry Pani doktor ";
 } else {
     // Prawdopodobnie mężczyzna
-    $greeting = "Dzień dobry doktorze ";
+    $greeting = "Dzień dobry Panie doktorze ";
 }
 ?>
 
@@ -56,8 +56,8 @@ if (in_array($lastChar, ['a', 'e', 'i', 'o', 'u', 'y'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel dentysty</title>
-    <link rel="stylesheet" href="../public/css/patient_panel.css">
-    <link rel="stylesheet" href="../public/css/styles.css">
+    <link rel="stylesheet" href="../../public/css/patient_panel.css">
+    <link rel="stylesheet" href="../../public/css/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
