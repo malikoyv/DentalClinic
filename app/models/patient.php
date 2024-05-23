@@ -1,4 +1,7 @@
 <?php
+require_once 'user.php';
+require_once 'IPatientInterface.php';
+require_once 'PatientTraits.php';
 
 // Klasa 'Patient' odpowiada za obsługę pacjentów
 class Patient extends User implements IPatientInterface

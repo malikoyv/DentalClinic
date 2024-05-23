@@ -1,4 +1,7 @@
 <?php
+require_once 'user.php';
+require_once 'IDentistInterface.php';
+require_once 'DentistTrait.php';
 
 class Dentist extends User implements IDentistInterface
 {

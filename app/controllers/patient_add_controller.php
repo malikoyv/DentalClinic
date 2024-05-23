@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email_err = "Proszę podać adres email.";
     } elseif ($patient->isEmailExists(trim($_POST["email"]))) { // Walidacja czy email już istnieje
         $email_err = "Ten adres email jest już zajęty.";
-    } elseif ($patient->validateEmail(trim($_POST["email"]))) { // Walidacja przy pomocy RegEx
+    } elseif ($patient->validateEmail(trim($_POST["email"])) == false) { // Walidacja przy pomocy RegEx
         $email_err = "Ten adres email ma niepoprawną formę.";
     } else $email = trim($_POST["email"]);
 

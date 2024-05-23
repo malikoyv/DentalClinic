@@ -8,7 +8,7 @@ CREATE TABLE patients (
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(40) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    role VARCHAR(20) DEFAULT 'patient'
+    role VARCHAR(20) DEFAULT 'patient' NOT NULL
 );
 
 CREATE TABLE dentists (
@@ -18,7 +18,7 @@ CREATE TABLE dentists (
     email VARCHAR(40) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     specialization VARCHAR(100),
-    role VARCHAR(20) DEFAULT 'dentist'
+    role VARCHAR(20) DEFAULT 'dentist' NOT NULL
 );
 
 CREATE TABLE availability (
