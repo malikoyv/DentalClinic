@@ -6,7 +6,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once '../../config/database.php';
-require_once '../models/Patient.php';
+require_once '../models/patient.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -36,11 +36,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Walidacja adresu email
     if (empty(trim($_POST["email"]))) {
         $email_err = "Proszę podać adres email.";
-    } elseif ($patient->isEmailExists(trim($_POST["email"]))) {
+    } elseif ($patient->isEmailExists(trim($_POST["email"]))) { // Walidacja czy email już istnieje
         $email_err = "Ten adres email jest już zajęty.";
-    } else {
-        $email = trim($_POST["email"]);
-    }
+    } elseif ($patient->validateEmail(trim($_POST["email"]))) { // Walidacja przy pomocy RegEx
+        $email_err = "Ten adres email ma niepoprawną formę.";
+    } else $email = trim($_POST["email"]);
 
     // Walidacja hasła
     if (empty(trim($_POST["password"]))) {

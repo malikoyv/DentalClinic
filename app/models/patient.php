@@ -1,8 +1,9 @@
 <?php
 
 // Klasa 'Patient' odpowiada za obsługę pacjentów
-class Patient
+class Patient extends User implements IPatientInterface
 {
+    use PatientTrait;
     private $db; // Prywatna zmienna do przechowywania połączenia z bazą danych
     private $table_name = "patients"; // Nazwa tabeli w bazie danych
 
@@ -211,5 +212,15 @@ class Patient
             }
         }
         return false; // Aktualne hasło jest nieprawidłowe lub wystąpił inny błąd
+    }
+
+    function validateEmail($email)
+    {
+        $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/'; 
+        if (preg_match($regex, $email)) {
+            return true;
+        } else { 
+            return false;
+        }  
     }
 }

@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Walidacja adresu e-mail
     if ($dentist->isEmailExists($email)) {
         $email_err = "Adres email jest już używany."; // Ustawienie błędu, jeśli email już istnieje
-    }
+    } else if ($dentist->validateEmail($email)) $email_err = "Ten adres email ma niepoprawną formę."; // walidacja przy pomocy RegEx
 
     // Sprawdzenie, czy nie ma błędów walidacji
     if (empty($first_name_err) && empty($last_name_err) && empty($email_err) && empty($password_err) && empty($specialization_err)) {

@@ -1,7 +1,8 @@
 <?php
 
-class Dentist
+class Dentist extends User implements IDentistInterface
 {
+    use DentistTrait;
     private $db; // Prywatna zmienna do przechowywania połączenia z bazą danych
     private $table_name = "dentists"; // Nazwa tabeli w bazie danych
 
