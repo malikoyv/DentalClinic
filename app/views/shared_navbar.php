@@ -6,7 +6,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container-fluid">
-        <a class="btn btn-light btn-lg" href="../../index.php">Poradnia</a>
+        <a class="btn btn-light btn-lg" href="index.php">Poradnia</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -18,8 +18,8 @@
                             Zaloguj się
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="app\views\patient_login.php">Logowanie pacjenta</a>
-                            <a class="dropdown-item" href="app\views\dentist_login.php">Logowanie personelu</a>
+                            <a class="dropdown-item" href="patient_login.php">Logowanie pacjenta</a>
+                            <a class="dropdown-item" href="dentist_login.php">Logowanie personelu</a>
                         </div>
                     </li>
                     <li class="nav-item">
@@ -83,7 +83,7 @@
                 <?php
                 // Wyświetlenie przycisku wylogowania jeśli użytkownik jest zalogowany
                 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin']) {
-                    echo '<a class="btn btn-light" href="app\controllers\logout_controller.php">Wyloguj się</a>';
+                    echo '<a class="btn btn-light" href="../controllers/logout_controller.php">Wyloguj się</a>';
                 }
                 ?>
             </span>

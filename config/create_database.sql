@@ -8,7 +8,7 @@ CREATE TABLE patients (
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(40) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
-    role VARCHAR(10) DEFAULT 'patient'
+    role VARCHAR(20) DEFAULT 'patient'
 );
 
 CREATE TABLE dentists (
@@ -18,7 +18,7 @@ CREATE TABLE dentists (
     email VARCHAR(40) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     specialization VARCHAR(100),
-    role VARCHAR(10) DEFAULT 'dentist'
+    role VARCHAR(20) DEFAULT 'dentist'
 );
 
 CREATE TABLE availability (
@@ -34,7 +34,7 @@ CREATE TABLE appointments (
     patient_id INT NOT NULL,
     dentist_id INT NOT NULL,
     appointment_date DATETIME NOT NULL,
-    status VARCHAR(20) DEFAULT 'scheduled',
+    status VARCHAR(30) DEFAULT 'scheduled',
     notes TEXT,
     FOREIGN KEY (patient_id) REFERENCES patients(patient_id),
     FOREIGN KEY (dentist_id) REFERENCES dentists(dentist_id)

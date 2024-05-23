@@ -1,5 +1,5 @@
 body {
-  background-image: url('../images/background.png'); /* Ścieżka do obrazu */
+  background-image: url('../images/background.jpg'); /* Ścieżka do obrazu */
   background-size: cover; /* Pokrywa cały dostępny obszar */
   background-position: center; /* Wyśrodkowuje obraz w obszarze */
   background-repeat: no-repeat; /* Zapobiega powtarzaniu się obrazu */
