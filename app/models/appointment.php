@@ -12,6 +12,8 @@ class Appointment
     public $dentist_id;
     public $appointment_date;
     public $status;
+    public $name;
+    public $price;
     public $notes;
 
     // Konstruktor klasy
@@ -56,7 +58,7 @@ class Appointment
     public function create()
     {
         // Zapytanie SQL do wstawienia nowej wizyty do bazy danych
-        $query = "INSERT INTO " . $this->table_name . " (patient_id, dentist_id, appointment_date, status) VALUES (:patient_id, :dentist_id, :appointment_date, :status)";
+        $query = "INSERT INTO " . $this->table_name . " (patient_id, dentist_id, appointment_date, status, name, price) VALUES (:patient_id, :dentist_id, :appointment_date, :status, :name, :price)";
 
         $stmt = $this->conn->prepare($query); // Przygotowanie zapytania
 
@@ -65,16 +67,20 @@ class Appointment
         $this->dentist_id = htmlspecialchars(strip_tags($this->dentist_id));
         $this->appointment_date = htmlspecialchars(strip_tags($this->appointment_date));
         $this->status = htmlspecialchars(strip_tags($this->status));
+        $this->name = htmlspecialchars(strip_tags($this->name));
+        $this->price = htmlspecialchars(strip_tags($this->price));
 
         // Przypisanie parametrów do zapytania
         $stmt->bindParam(":patient_id", $this->patient_id);
         $stmt->bindParam(":dentist_id", $this->dentist_id);
         $stmt->bindParam(":appointment_date", $this->appointment_date);
         $stmt->bindParam(":status", $this->status);
+        $stmt->bindParam(":name", $this->name);
+        $stmt->bindParam(":price", $this->price);
 
         // Wykonanie zapytania i logowanie
         if ($stmt->execute()) {
-            error_log("Umówiono wizytę: Pacjent ID " . $this->patient_id . ", Dentysta ID " . $this->dentist_id . ", Data: " . $this->appointment_date);
+            error_log("Umówiono wizytę: Pacjent ID " . $this->patient_id . ", Nazwa zabiegu: " . $this->name . ", Dentysta ID " . $this->dentist_id . ", Data: " . $this->appointment_date . ", Cena: " . $this->price);
             return true;
         }
 

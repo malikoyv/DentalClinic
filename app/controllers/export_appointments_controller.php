@@ -27,7 +27,7 @@ header('Content-Disposition: attachment; filename="wizyty.csv"');
 $output = fopen('php://output', 'w');
 
 // Definiowanie i zapis nagłówków kolumn w pliku CSV
-fputcsv($output, array('ID wizyty', 'Data i czas', 'Status', 'Imię', 'Nazwisko'));
+fputcsv($output, array('ID wizyty', 'Nazwa', 'Data i czas', 'Status', 'Imię', 'Nazwisko', 'Cena'));
 
 // Iteracja przez dane i zapis każdego wiersza do pliku CSV
 foreach ($data as $row) {

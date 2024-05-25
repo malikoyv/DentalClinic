@@ -206,6 +206,11 @@ if (in_array($lastChar, ['a', 'e', 'i', 'o', 'u', 'y'])) {
                     <form action="../controllers/dentist_availability_controller.php" method="post">
                         <input type="hidden" name="dentist_id" value="<?php echo $_SESSION['user_id']; ?>">
                         <div class="mb-3">
+                            <label for="start_time">Nazwa zabiegu:</label>
+                            <input type="text" id="name" name="name" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
                             <label for="start_time">Czas rozpoczęcia:</label>
                             <input type="datetime-local" id="start_time" name="start_time" class="form-control">
                         </div>
@@ -214,6 +219,12 @@ if (in_array($lastChar, ['a', 'e', 'i', 'o', 'u', 'y'])) {
                             <label for="end_time">Czas zakończenia:</label>
                             <input type="datetime-local" id="end_time" name="end_time" class="form-control">
                         </div>
+
+                        <div class="mb-3">
+                            <label for="end_time">Price:</label>
+                            <input type="number" id="price" name="price" class="form-control">
+                        </div>
+
                         <button type="submit" class="btn btn-primary">Dodaj dostępność</button>
                         <button type="button" class="btn btn-secondary" onclick="toggleSection('add-availability-section', false)">Anuluj</button>
                     </form>

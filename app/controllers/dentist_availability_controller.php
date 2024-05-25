@@ -17,8 +17,8 @@ $db = $database->getConnection();
 $availability = new Availability($db);
 
 // Inicjalizacja zmiennych do przechowywania danych i ewentualnych błędów
-$start_time = $end_time = "";
-$start_time_err = $end_time_err = "";
+$start_time = $end_time = $name = $price = "";
+$start_time_err = $end_time_err = $name_err = $price_err = "";
 
 // Obsługa żądania typu POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -26,6 +26,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dentist_id = $_SESSION['user_id'];
     $start_time = trim($_POST["start_time"]);
     $end_time = trim($_POST["end_time"]);
+    $name = trim($_POST["name"]);
+    $price = trim($_POST["price"]);
 
     // Walidacja czasów startu i końca
     if (empty($start_time)) {
@@ -47,11 +49,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $start_time_err = "Czas rozpoczęcia nie może być w przeszłości.";
     }
 
+    if (empty($name)){
+        $name_err = "Nazwa zabiegu musi być ustawiona.";
+    }
+
+    if (empty($price)){
+        $price_err = "Cena zabiegu musi być ustawiona.";
+    }
+
     // Jeśli nie ma błędów, przystąp do tworzenia lub aktualizacji dostępności
-    if (empty($start_time_err) && empty($end_time_err)) {
+    if (empty($start_time_err) && empty($end_time_err) && empty($name_err) && empty($price_err)) {
         $availability->dentist_id = $dentist_id;
         $availability->start_time = $start_time;
         $availability->end_time = $end_time;
+        $availability->name = $name;
+        $availability->price = $price;
 
         // Sprawdzenie, czy to aktualizacja istniejącej dostępności
         if (isset($_POST['availability_id']) && !empty($_POST['availability_id'])) {
@@ -74,6 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Jeśli wystąpiły błędy walidacji, ustaw odpowiednie komunikaty błędów
         $_SESSION['start_time_err'] = $start_time_err;
         $_SESSION['end_time_err'] = $end_time_err;
+        $_SESSION['name_err'] = $name_err;
+        $_SESSION['price_err'] = $price_err;
         header("location: ../views/dentist_panel.php");
         exit;
     }

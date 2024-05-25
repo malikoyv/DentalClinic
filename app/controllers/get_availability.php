@@ -53,6 +53,8 @@ foreach ($availableSlots as $slot) {
                 'dentist_id' => $slot['dentist_id'],
                 'start_time' => $startTime->format('Y-m-d H:i:s'),
                 'end_time' => $sessionEnd->format('Y-m-d H:i:s'),
+                'name' => $slot['name'],
+                'price' => $slot['price'],
                 'first_name' => $slot['first_name'],
                 'last_name' => $slot['last_name']
             ];

@@ -10,6 +10,8 @@ class Availability
     public $dentist_id;
     public $start_time;
     public $end_time;
+    public $name;
+    public $price;
 
     // Konstruktor klasy
     public function __construct($db)
@@ -21,7 +23,7 @@ class Availability
     public function create()
     {
         // Zapytanie SQL do wstawienia nowej dostępności do bazy danych
-        $query = "INSERT INTO " . $this->table_name . " (dentist_id, start_time, end_time) VALUES (:dentist_id, :start_time, :end_time)";
+        $query = "INSERT INTO " . $this->table_name . " (dentist_id, start_time, end_time, name, price) VALUES (:dentist_id, :start_time, :end_time, :name, :price)";
 
         $stmt = $this->conn->prepare($query); // Przygotowanie zapytania
 
@@ -29,15 +31,19 @@ class Availability
         $this->dentist_id = htmlspecialchars(strip_tags($this->dentist_id));
         $this->start_time = htmlspecialchars(strip_tags($this->start_time));
         $this->end_time = htmlspecialchars(strip_tags($this->end_time));
+        $this->name = htmlspecialchars(strip_tags($this->name));
+        $this->price = strip_tags($this->price);
 
         // Przypisanie danych do zapytania
         $stmt->bindParam(':dentist_id', $this->dentist_id);
         $stmt->bindParam(':start_time', $this->start_time);
         $stmt->bindParam(':end_time', $this->end_time);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':price', $this->price);
 
         // Wykonanie zapytania i logowanie
         if ($stmt->execute()) {
-            error_log("Nowa dostępność została dodana: Dentysta ID " . $this->dentist_id . ", Czas rozpoczęcia: " . $this->start_time . ", Czas zakończenia: " . $this->end_time);
+            error_log("Nowa dostępność została dodana: Dentysta ID " . $this->dentist_id . ", Nazwa zabiegu: " . $this->name . ", Czas rozpoczęcia: " . $this->start_time . ", Czas zakończenia: " . $this->end_time . ", Cena: " . $this->price);
             return true;
         }
 
@@ -56,15 +62,19 @@ class Availability
         $this->availability_id = htmlspecialchars(strip_tags($this->availability_id));
         $this->start_time = htmlspecialchars(strip_tags($this->start_time));
         $this->end_time = htmlspecialchars(strip_tags($this->end_time));
+        $this->name = htmlspecialchars(strip_tags($this->name));
+        $this->price = strip_tags($this->price);
 
         // Przypisanie danych do zapytania
         $stmt->bindParam(':availability_id', $this->availability_id);
         $stmt->bindParam(':start_time', $this->start_time);
         $stmt->bindParam(':end_time', $this->end_time);
+        $stmt->bindParam(':name', $this->name);
+        $stmt->bindParam(':price', $this->price);
 
         // Wykonanie zapytania i logowanie
         if ($stmt->execute()) {
-            error_log("Dostępność została zaktualizowana: Dentysta ID " . $this->dentist_id . ", Czas rozpoczęcia: " . $this->start_time . ", Czas zakończenia: " . $this->end_time);
+            error_log("Dostępność została zaktualizowana: Dentysta ID " . $this->dentist_id . ", Nazwa zabiegu: " . $this->name . ", Czas rozpoczęcia: " . $this->start_time . ", Czas zakończenia: " . $this->end_time . ", Cena: " . $this->price);
             return true;
         }
 
@@ -95,7 +105,7 @@ class Availability
         $currentDate = date('Y-m-d H:i:s');
 
         // Zapytanie SQL do pobrania przyszłej dostępności
-        $query = "SELECT a.availability_id, a.dentist_id, a.start_time, a.end_time, d.first_name, d.last_name 
+        $query = "SELECT a.availability_id, a.dentist_id, a.name, a.price, a.start_time, a.end_time, d.first_name, d.last_name
           FROM " . $this->table_name . " a 
           JOIN dentists d ON a.dentist_id = d.dentist_id 
           WHERE a.start_time > :currentDate 

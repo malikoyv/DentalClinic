@@ -42,6 +42,8 @@ function initializeCalendar() {
                                 title: item.first_name + ' ' + item.last_name,
                                 start: item.start_time,
                                 end: item.end_time,
+                                name: item.name,
+                                price: item.price,
                                 color: 'green',
                                 extendedProps: {
                                     dentist_id: item.dentist_id
