@@ -24,7 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Pobranie danych pacjenta, dentysty i daty wizyty z danych JSON
     $patient_id = $_SESSION['user_id'];
     $dentist_id = $data['dentist_id'] ?? null;
-    $name = $data['name'] ?? null;
     
     $appointment_date = $data['appointment_date'] ?? null;
     if ($appointment_date) {
@@ -44,8 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $appointment->dentist_id = $dentist_id;
         $appointment->appointment_date = $appointment_date;
         $appointment->status = 'scheduled';
-        $appointment->name = $data['name'];
-        $appointment->price = $data['price'];
 
         // Próba utworzenia nowej wizyty
         if ($appointment->create()) {

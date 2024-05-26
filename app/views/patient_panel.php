@@ -87,8 +87,8 @@ if (isset($_SESSION['$password_err'])) {
                                     <li><a class="dropdown-item" href="#" onclick="loadAppointments('scheduled', false, 'zaplanowane:')">Zaplanowane</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="loadAppointments('cancelled_by_patient', false, 'odwołane przeze mnie:')">Odwołane przeze mnie</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="loadAppointments('cancelled_by_dentist', false, 'odwołane przez dentystę:')">Odwołane przez dentystę</a></li>
-                                    <li><a class="dropdown-ite" href="#" onclick="loadAppointments('', false, 'wszystkie:')">Wszystkie</a></li>
-                                </ul>m
+                                    <li><a class="dropdown-item" href="#" onclick="loadAppointments('', false, 'wszystkie:')">Wszystkie</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
