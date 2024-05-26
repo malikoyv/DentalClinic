@@ -97,12 +97,10 @@ if (isset($_SESSION['$password_err'])) {
                         <table class="table table-bordered table-hover" id="appointments-table">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="align-middle">Nazwa</th>
                                     <th class="align-middle">Data i godzina wizyty <button class="btn btn-light btn-sm" onclick="sortAppointments('date')"><i class="bi bi-sort-down"></i></button></th>
                                     <th class="align-middle">Lekarz <button class="btn btn-light btn-sm" onclick="sortAppointments('dentist')"><i class="bi bi-sort-alpha-down"></i></button></th>
                                     <th class="align-middle">Status</th>
                                     <th class="align-middle">Akcja</th>
-                                    <th class="align-middle">Cena</th>
                                 </tr>
                             </thead>
                             <tbody>
