@@ -250,4 +250,25 @@ class Dentist extends User implements IDentistInterface
         // Jeśli liczba wierszy jest większa od 0, to znaczy, że email jest używany przez innego dentystę
         return $count > 0;
     }
+
+    // Add the method to send a message
+    public function sendMessage($conversationId, $message)
+    {
+        $query = "INSERT INTO messages (conversation_id, sender_id, sender_role, message_text) VALUES (:conversation_id, :sender_id, 'doctor', :message_text)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':conversation_id', $conversationId);
+        $stmt->bindParam(':sender_id', $_SESSION['user_id']);
+        $stmt->bindParam(':message_text', $message);
+        return $stmt->execute();
+    }
+
+    // Add the method to get messages
+    public function getMessages($conversationId)
+    {
+        $query = "SELECT * FROM messages WHERE conversation_id = :conversation_id ORDER BY created_at ASC";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':conversation_id', $conversationId);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

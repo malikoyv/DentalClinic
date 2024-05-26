@@ -226,4 +226,49 @@ class Patient extends User implements IPatientInterface
             return false;
         }  
     }
+
+    // Add the method to start a new conversation
+    public function startConversation($doctorId)
+    {
+        // Check if a conversation already exists
+        $query = "SELECT conversation_id FROM conversations WHERE patient_id = :patient_id AND doctor_id = :doctor_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':patient_id', $_SESSION['user_id']);
+        $stmt->bindParam(':doctor_id', $doctorId);
+        $stmt->execute();
+
+        if ($stmt->rowCount() == 0) {
+            // Create a new conversation if it doesn't exist
+            $query = "INSERT INTO conversations (patient_id, doctor_id) VALUES (:patient_id, :doctor_id)";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':patient_id', $_SESSION['user_id']);
+            $stmt->bindParam(':doctor_id', $doctorId);
+            $stmt->execute();
+            return $this->db->lastInsertId();
+        } else {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row['conversation_id'];
+        }
+    }
+
+    // Add the method to send a message
+    public function sendMessage($conversationId, $message)
+    {
+        $query = "INSERT INTO messages (conversation_id, sender_id, sender_role, message_text) VALUES (:conversation_id, :sender_id, 'patient', :message_text)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':conversation_id', $conversationId);
+        $stmt->bindParam(':sender_id', $_SESSION['user_id']);
+        $stmt->bindParam(':message_text', $message);
+        return $stmt->execute();
+    }
+
+    // Add the method to get messages
+    public function getMessages($conversationId)
+    {
+        $query = "SELECT * FROM messages WHERE conversation_id = :conversation_id ORDER BY created_at ASC";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':conversation_id', $conversationId);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
