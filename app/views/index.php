@@ -34,7 +34,7 @@ session_start();
                 <a href="patient_register.php" class="btn btn-lg btn-primary m-2">Zarejestruj się teraz</a>
                 <a href="patient_login.php" class="btn btn-lg btn-secondary m-2">Zaloguj się</a>
             </div>
-            <div class=" col-lg-7 p-4">
+            <div class="col-lg-7 p-4">
                 <video autoplay muted loop id="myVideo" class="w-100">
                     <source src="../../public/videos/start_video2.mp4" type="video/mp4">
                     Twoja przeglądarka nie obsługuje tagu video.

@@ -16,221 +16,159 @@ class Patient extends User implements IPatientInterface
         $this->db = $db; // Przypisanie połączenia do zmiennej
     }
 
-    // Funkcja, która logiuje pacjenta
+    // Funkcja do dodawania nowego pacjenta
     public function addNewPatient($firstName, $lastName, $email, $password)
     {
-        // Sprawdzenie, czy email już istnieje
         if ($this->isEmailExists($email)) {
             error_log("Email " . $email . " już istnieje w bazie danych.");
-            return false; // Adres email już istnieje
+            return false;
         }
 
-        // Zapytanie SQL do wstawienia danych
         $query = "INSERT INTO " . $this->table_name . " (first_name, last_name, email, password) VALUES (:first_name, :last_name, :email, :password)";
-
-        // Przygotowanie zapytania
         $stmt = $this->db->prepare($query);
 
-        // Oczyszczenie i bindowanie
         $firstName = htmlspecialchars(strip_tags($firstName));
         $lastName = htmlspecialchars(strip_tags($lastName));
         $email = htmlspecialchars(strip_tags($email));
-        $passwordHashed = password_hash($password, PASSWORD_DEFAULT); // Hashowanie hasła
+        $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
 
-        // Przypisanie wartości do zapytania
         $stmt->bindParam(':first_name', $firstName);
         $stmt->bindParam(':last_name', $lastName);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $passwordHashed);
 
-        // Wykonanie zapytania
         if ($stmt->execute()) {
             error_log("Pacjent " . $firstName . " " . $lastName . " został dodany do bazy danych.");
-            return true; // Powodzenie dodania
+            return true;
         } else {
             error_log("Błąd dodawania pacjenta: " . implode(";", $stmt->errorInfo()));
-            return false; // Niepowodzenie dodania
+            return false;
         }
     }
 
-    // Funkcja, która logiuje pacjenta
+    // Funkcja, która loguje pacjenta
     public function login($email, $password)
     {
-        // Zapytanie SQL do pobrania informacji o pacjentach na podstawie emaila
         $query = "SELECT patient_id, first_name, last_name, email, password, role FROM " . $this->table_name . " WHERE email = :email";
-
-        // Przygotowanie zapytania
         $stmt = $this->db->prepare($query);
 
-        // Oczyszczenie i bindowanie
         $email = htmlspecialchars(strip_tags($email));
         $stmt->bindParam(':email', $email);
+        $stmt->execute();
 
-        $stmt->execute(); // Wykonanie zapytania
-
-        // Sprawdzenie, czy znaleziono więcej niż jeden rekord
         if ($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC); // Pobranie wiersza z bazy danych i zapisanie go w tablicy asocjacyjnej
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Przypisanie wartości do zmiennych
-            $patient_id = $row['patient_id'];
-            $hashed_password = $row['password'];
-            $first_name = $row['first_name'];
-            $last_name = $row['last_name'];
-            $role = $row['role'];
-
-            // Sprawdzenie, czy hasło jest prawidłowe i przypisanie wartości do zmiennych sesji
-            if (password_verify($password, $hashed_password)) {
+            if (password_verify($password, $row['password'])) {
                 $_SESSION["loggedin"] = true;
-                $_SESSION["user_id"] = $patient_id;
-                $_SESSION["email"] = $email;
-                $_SESSION["first_name"] = $first_name;
-                $_SESSION["last_name"] = $last_name;
-                $_SESSION["role"] = $role;
+                $_SESSION["user_id"] = $row['patient_id'];
+                $_SESSION["email"] = $row['email'];
+                $_SESSION["first_name"] = $row['first_name'];
+                $_SESSION["last_name"] = $row['last_name'];
+                $_SESSION["role"] = $row['role'];
 
-                return true; // Zalogowano pomyślnie
+                return true;
             } else {
-                return false; // Nieprawidłowe hasło
+                return false;
             }
         } else {
-            return false; // Nie znaleziono użytkownika o podanym adresie email
+            return false;
         }
     }
 
     // Funkcja, która sprawdza czy email jest już używany
     public function isEmailExists($email)
     {
-        // Zapytanie SQL do sprawdzenia, czy email jest już używany
         $query = "SELECT COUNT(*) FROM " . $this->table_name . " WHERE email = :email";
-
-        // Przygotowanie zapytania
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':email', $email);
-
-        // Wykonanie zapytania
         $stmt->execute();
-        $count = $stmt->fetchColumn();
-
-        // Jeśli count > 0, email już istnieje
-        return $count > 0;
+        return $stmt->fetchColumn() > 0;
     }
 
     // Funkcja, która sprawdza czy email jest już używany przez innego pacjenta
     public function isEmailUsedByAnotherPatient($patientId, $email)
     {
-        // Zapytanie SQL do sprawdzenia, czy email jest już używany przez innego pacjenta
-        $query = "SELECT COUNT(*) FROM " . $this->table_name . " 
-                  WHERE email = :email AND patient_id != :patient_id";
-
-        // Przygotowanie zapytania
+        $query = "SELECT COUNT(*) FROM " . $this->table_name . " WHERE email = :email AND patient_id != :patient_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':patient_id', $patientId);
-
-        // Wykonanie zapytania
         $stmt->execute();
-        $count = $stmt->fetchColumn();
-
-        // Sprawdzenie, czy znaleziono więcej niż jeden rekord
-        return $count > 0;
+        return $stmt->fetchColumn() > 0;
     }
 
     // Funkcja, która aktualizuje dane osobowe pacjenta
     public function updateProfile($patientId, $firstName, $lastName, $email)
     {
-        // Sprawdzenie, czy email jest już używany przez innego pacjenta
         if ($this->isEmailUsedByAnotherPatient($patientId, $email)) {
-            error_log("Podany adres email jest używany."); // Zapisanie informacji o błędzie w pliku error.log
-            return false; // Email jest już używany
+            error_log("Podany adres email jest używany.");
+            return false;
         }
 
-        // Zapytanie SQL do aktualizacji danych osobowych pacjenta
         $query = "UPDATE " . $this->table_name . " 
                   SET first_name = :first_name, 
                       last_name = :last_name, 
                       email = :email 
                   WHERE patient_id = :patient_id";
-
-        // Przygotowanie zapytania
         $stmt = $this->db->prepare($query);
 
-        // Oczyszczenie i bindowanie
         $firstName = htmlspecialchars(strip_tags($firstName));
         $lastName = htmlspecialchars(strip_tags($lastName));
         $email = htmlspecialchars(strip_tags($email));
         $patientId = htmlspecialchars(strip_tags($patientId));
 
-        // Przypisanie danych do zapytania
         $stmt->bindParam(':first_name', $firstName);
         $stmt->bindParam(':last_name', $lastName);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':patient_id', $patientId);
 
-        // Wykonanie zapytania
         if ($stmt->execute()) {
-            error_log("Pacjent " . $_SESSION['first_name'] . " " . $_SESSION['last_name'] . " - zaktualizował dane osobowe.");
-            return true; // Powodzenie aktualizacji
+            error_log("Pacjent " . $_SESSION['first_name'] . " " . $_SESSION['last_name'] . " zaktualizował dane osobowe.");
+            return true;
         } else {
             error_log("Błąd aktualizacji danych: " . implode(";", $stmt->errorInfo()));
-            return false; // Niepowodzenie aktualizacji
+            return false;
         }
     }
 
     // Funkcja, która aktualizuje hasło pacjenta
     public function changePassword($patientId, $currentPassword, $newPassword)
     {
-        // Pobranie aktualnego hasła użytkownika
         $query = "SELECT password FROM " . $this->table_name . " WHERE patient_id = :patient_id";
-        $stmt = $this->db->prepare($query); // Przygotowanie zapytania
-        $stmt->bindParam(':patient_id', $patientId); // Przypisanie ID pacjenta do zapytania
-        $stmt->execute(); // Wykonanie zapytania
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':patient_id', $patientId);
+        $stmt->execute();
 
-        // Sprawdzenie, czy znaleziono więcej niż jeden rekord
         if ($stmt->rowCount() == 1) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC); // Pobranie wiersza z bazy danych i zapisanie go w tablicy asocjacyjnej
-            $hashed_password = $row['password']; // Przypisanie hasła do zmiennej
-
-            // Sprawdzenie, czy aktualne hasło jest prawidłowe
-            if (password_verify($currentPassword, $hashed_password)) {
-                // Aktualizacja hasła
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (password_verify($currentPassword, $row['password'])) {
                 $newHashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-
-                // Zapytanie SQL do aktualizacji hasła
                 $updateQuery = "UPDATE " . $this->table_name . " SET password = :new_password WHERE patient_id = :patient_id";
                 $updateStmt = $this->db->prepare($updateQuery);
-
-                // Oczyszczenie i bindowanie
                 $updateStmt->bindParam(':new_password', $newHashedPassword);
                 $updateStmt->bindParam(':patient_id', $patientId);
 
-                // Jeśli aktualizacja przebiegła pomyślnie, zwróć true
                 if ($updateStmt->execute()) {
                     error_log("Hasło zostało pomyślnie zaktualizowane.");
-                    return true; // Hasło zostało pomyślnie zaktualizowane
-                }
-                if (!$updateStmt->execute()) { 
-                    // Jeśli aktualizacja nie powiodła się, zapisz błąd w pliku error.log
+                    return true;
+                } else {
                     error_log("Błąd aktualizacji hasła: " . implode(";", $updateStmt->errorInfo()));
                 }
             }
         }
-        return false; // Aktualne hasło jest nieprawidłowe lub wystąpił inny błąd
+        return false;
     }
 
-    function validateEmail($email)
+    // Walidacja emaila
+    public function validateEmail($email)
     {
-        $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/'; 
-        if (preg_match($regex, $email)) {
-            return true;
-        } else { 
-            return false;
-        }  
+        $regex = '/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/';
+        return preg_match($regex, $email) === 1;
     }
 
-    // Add the method to start a new conversation
+    // Rozpoczęcie nowej rozmowy
     public function startConversation($doctorId)
     {
-        // Check if a conversation already exists
         $query = "SELECT conversation_id FROM conversations WHERE patient_id = :patient_id AND doctor_id = :doctor_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':patient_id', $_SESSION['user_id']);
@@ -238,7 +176,6 @@ class Patient extends User implements IPatientInterface
         $stmt->execute();
 
         if ($stmt->rowCount() == 0) {
-            // Create a new conversation if it doesn't exist
             $query = "INSERT INTO conversations (patient_id, doctor_id) VALUES (:patient_id, :doctor_id)";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':patient_id', $_SESSION['user_id']);
@@ -251,24 +188,37 @@ class Patient extends User implements IPatientInterface
         }
     }
 
-    // Add the method to send a message
+    // Wysyłanie wiadomości
     public function sendMessage($conversationId, $message)
     {
+        $sender_id = 1;
         $query = "INSERT INTO messages (conversation_id, sender_id, sender_role, message_text) VALUES (:conversation_id, :sender_id, 'patient', :message_text)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':conversation_id', $conversationId);
-        $stmt->bindParam(':sender_id', $_SESSION['user_id']);
+        $stmt->bindParam(':sender_id', $sender_id);
         $stmt->bindParam(':message_text', $message);
-        return $stmt->execute();
+
+        if ($stmt->execute()) {
+            error_log("Wiadomość została wysłana.");
+            return true;
+        } else {
+            error_log("Błąd wysyłania wiadomości: " . implode(";", $stmt->errorInfo()));
+            return false;
+        }
     }
 
-    // Add the method to get messages
-    public function getMessages($conversationId)
-    {
-        $query = "SELECT * FROM messages WHERE conversation_id = :conversation_id ORDER BY created_at ASC";
+    public function getMessages($conversationId) {
+        $query = "SELECT * FROM messages WHERE conversation_id = :conversationId ORDER BY created_at ASC";
         $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':conversation_id', $conversationId);
+        $stmt->bindParam(':conversationId', $conversationId);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        $messages = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $messages[] = $row;
+        }
+        return $messages;
     }
+    
 }
+?>
