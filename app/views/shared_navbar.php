@@ -19,17 +19,11 @@
                     <li class="nav-item">
                         <a class="btn btn-light" href="patient_register.php">Zarejestruj się!</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="chat.php">Chat</a>
-                    </li>
                 <?php else : ?>
                     <li class="nav-item dropdown">
                         <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Twoje konto
                         </a>
-                        <li class="nav-item">
-                            <a class="nav-link" href="chat.php">Chat</a>
-                        </li>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <?php
                             if (isset($_SESSION['role'])) {
@@ -46,6 +40,9 @@
                                 }
                             }
                             ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="chat.php">Chat</a>
+                            </li>
                         </div>
                     </li>
                 <?php endif; ?>
