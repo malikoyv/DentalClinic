@@ -7,7 +7,6 @@ require_once '../../config/database.php';
 $database = new Database();
 $db = $database->getConnection();
 $user = null;
-$sender_id = 1;
 $conversationId = 1; // Example conversation ID. Replace with actual logic to get the conversation ID
 
 // Initialize user object based on role
@@ -70,7 +69,7 @@ if ($user) {
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-8 offset-md-2">
-                <h3>Chat</h3>
+                <h3><br>Chat</h3>
                 <div class="chat-box p-3 mb-3 border">
                     <?php foreach ($messages as $message): ?>
                         <div class="message <?= htmlspecialchars($message['sender_role']) ?>">
@@ -104,7 +103,7 @@ if ($user) {
                         chatBox.appendChild(messageDiv);
                     });
                 });
-        }, 3000); // Refresh every 3 seconds
+        }), 3000; // Refresh every 3 seconds
     </script>
 </body>
 </html>

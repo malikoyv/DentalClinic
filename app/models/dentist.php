@@ -254,10 +254,10 @@ class Dentist extends User implements IDentistInterface
     // Add the method to send a message
     public function sendMessage($conversationId, $message)
     {
-        $query = "INSERT INTO messages (conversation_id, sender_id, sender_role, message_text) VALUES (:conversation_id, :sender_id, 'dentist', :message_text)";
+        $query = "INSERT INTO messages (conversation_id, sender_id, sender_role, message_text) VALUES (:conversation_id, :sender_id, 'doctor', :message_text)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':conversation_id', $conversationId);
-        $stmt->bindParam(':sender_id', $_SESSION['dentist_id']);
+        $stmt->bindParam(':sender_id', $_SESSION['user_id']);
         $stmt->bindParam(':message_text', $message);
         return $stmt->execute();
     }

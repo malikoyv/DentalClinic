@@ -166,36 +166,13 @@ class Patient extends User implements IPatientInterface
         return preg_match($regex, $email) === 1;
     }
 
-    // Rozpoczęcie nowej rozmowy
-    public function startConversation($doctorId)
-    {
-        $query = "SELECT conversation_id FROM conversations WHERE patient_id = :patient_id AND doctor_id = :doctor_id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':patient_id', $_SESSION['user_id']);
-        $stmt->bindParam(':doctor_id', $doctorId);
-        $stmt->execute();
-
-        if ($stmt->rowCount() == 0) {
-            $query = "INSERT INTO conversations (patient_id, doctor_id) VALUES (:patient_id, :doctor_id)";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':patient_id', $_SESSION['user_id']);
-            $stmt->bindParam(':doctor_id', $doctorId);
-            $stmt->execute();
-            return $this->db->lastInsertId();
-        } else {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $row['conversation_id'];
-        }
-    }
-
     // Wysyłanie wiadomości
     public function sendMessage($conversationId, $message)
     {
-        $sender_id = 1;
         $query = "INSERT INTO messages (conversation_id, sender_id, sender_role, message_text) VALUES (:conversation_id, :sender_id, 'patient', :message_text)";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':conversation_id', $conversationId);
-        $stmt->bindParam(':sender_id', $sender_id);
+        $stmt->bindParam(':sender_id', $_SESSION['user_id']);
         $stmt->bindParam(':message_text', $message);
 
         if ($stmt->execute()) {
