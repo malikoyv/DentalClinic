@@ -27,13 +27,18 @@ header('Content-Disposition: attachment; filename="wizyty.csv"');
 $output = fopen('php://output', 'w');
 
 // Definiowanie i zapis nagłówków kolumn w pliku CSV
-fputcsv($output, array('ID wizyty', 'Nazwa', 'Data i czas', 'Status', 'Imię', 'Nazwisko', 'Cena'));
+fputcsv($output, array('ID wizyty', 'Data i czas', 'Status', 'Imię', 'Nazwisko'));
 
 // Iteracja przez dane i zapis każdego wiersza do pliku CSV
-foreach ($data as $row) {
-    fputcsv($output, $row); // Zapis wiersza danych
-}
+array_walk($data, "fput");
 
 // Zamknięcie strumienia wyjściowego
 fclose($output);
 exit; // Zakończenie skryptu
+
+// funkcja dla array_walk -> zapiz wiersza danych
+function fput($row){
+    // Otworzenie strumienia wyjściowego dla pliku CSV
+    $output = fopen('php://output', 'w');
+    fputcsv($output, $row);
+}

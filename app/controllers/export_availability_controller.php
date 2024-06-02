@@ -27,13 +27,17 @@ header('Content-Disposition: attachment; filename="dostepnosc.csv"');
 $output = fopen('php://output', 'w');
 
 // Definiowanie i zapis nagłówków kolumn w pliku CSV
-fputcsv($output, array('ID Dostępności', 'Nazwa', 'Dentysta ID', 'Czas Rozpoczęcia', 'Czas Zakończenia', 'Cena'));
+fputcsv($output, array('ID Dostępności', 'Dentysta ID', 'Czas Rozpoczęcia', 'Czas Zakończenia', 'Cena', 'Nazwa'));
 
 // Iteracja przez dane i zapis każdego wiersza do pliku CSV
-foreach ($data as $row) {
-    fputcsv($output, $row); // Zapis wiersza danych do pliku CSV
-}
+array_walk($data, "fput");
 
 // Zamknięcie strumienia wyjściowego
 fclose($output);
 exit; // Zakończenie skryptu
+
+function fput($row){
+    // Otworzenie strumienia wyjściowego dla pliku CSV
+    $output = fopen('php://output', 'w');
+    fputcsv($output, $row); // zapis wiersza do pliku csv
+}

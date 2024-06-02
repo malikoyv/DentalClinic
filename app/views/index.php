@@ -88,5 +88,24 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAxzVXAIo_8UKc7BZFErEL42Gw8TWmEkXA",
+            authDomain: "dentalclinic-wprg.firebaseapp.com",
+            projectId: "dentalclinic-wprg",
+            storageBucket: "dentalclinic-wprg.appspot.com",
+            messagingSenderId: "1039400925600",
+            appId: "1:1039400925600:web:9bef5273aa15f72dcc8cc5"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+    </script>
 </body>
 </html>
