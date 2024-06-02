@@ -15,6 +15,7 @@ Aplikacja Zarządzania Kliniką Dentystyczną to kompleksowe narzędzie przeznac
 - **Backend**: PHP.
 - **Frontend**: HTML, CSS (Bootstrap), JavaScript (w tym biblioteki takie jak FullCalendar i SweetAlert2).
 - **Baza danych**: MySQL.
+-
 
 ## Uruchomienie
 1. Sklonuj repozytorium do lokalnego środowiska.
