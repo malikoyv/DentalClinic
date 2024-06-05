@@ -39,14 +39,13 @@ if (isset($_SESSION['$password_err'])) {
 
 ?>
 
-
 <!DOCTYPE html>
 <html lang="pl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel pacjenta</title>
+    <title>Dental Clinic - Patient panel</title>
     <link rel="stylesheet" href="../../public/css/patient_panel.css">
     <link rel="stylesheet" href="../../public/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">

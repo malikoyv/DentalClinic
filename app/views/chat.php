@@ -91,7 +91,7 @@ if ($user) {
     <!-- JavaScript to auto-refresh the chat -->
     <script>
         setInterval(function() {
-            fetch(`get_messages.php?conversation_id=<?= $conversationId ?>`)
+            fetch(`../controllers/get_messages.php?conversation_id=<?= $conversationId ?>`)
                 .then(response => response.json())
                 .then(data => {
                     const chatBox = document.querySelector('.chat-box');

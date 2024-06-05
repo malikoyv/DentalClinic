@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
     <div class="container-fluid">
-        <a class="btn btn-light btn-lg" href="index.php">Poradnia</a>
+        <a class="btn btn-light btn-lg" href="index.php">Dental Clinic</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -9,20 +9,21 @@
                 <?php if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] == false) : ?>
                     <li class="nav-item dropdown">
                         <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Zaloguj się
+                            Log in
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="patient_login.php">Logowanie pacjenta</a>
-                            <a class="dropdown-item" href="dentist_login.php">Logowanie personelu</a>
+                            <a class="dropdown-item" href="patient_login.php">Patient</a>
+                            <a class="dropdown-item" href="dentist_login.php">Staff</a>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-light" href="patient_register.php">Zarejestruj się!</a>
+                        <a class="btn btn-light" href="patient_register.php">Sign up</a>
                     </li>
+                    
                 <?php else : ?>
                     <li class="nav-item dropdown">
                         <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Twoje konto
+                            Your account
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <?php
@@ -40,12 +41,24 @@
                                 }
                             }
                             ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="chat.php">Chat</a>
-                            </li>
-                        </div>
+                        </div> 
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="chat.php">Chat</a>
                     </li>
                 <?php endif; ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="index.php#our-doctors">Our Doctors</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="index.php#news">News</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="pricelist.php">Price list</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link" href="contact.php">Contact</a>
+                </li>
             </ul>
             <span class="nav-item">
                 <?php
@@ -57,15 +70,15 @@
                             $translatedRole = 'administrator';
                             break;
                         case 'patient':
-                            $translatedRole = 'pacjent';
+                            $translatedRole = 'patient';
                             break;
                         case 'dentist':
-                            $translatedRole = 'dentysta';
+                            $translatedRole = 'dentist';
                             break;
                         default:
-                            $translatedRole = 'nieokreślona rola';
+                            $translatedRole = 'unnamed role';
                     }
-                    echo "Witaj <strong>" . htmlspecialchars($firstName) . "</strong>! Jesteś zalogowany/a jako <strong>" . htmlspecialchars($translatedRole) . "</strong>.";
+                    echo "Witaj <strong>" . htmlspecialchars($firstName) . "</strong>! You're logged in as <strong>" . htmlspecialchars($translatedRole) . "</strong>.";
                 }
                 ?>
             </span>
