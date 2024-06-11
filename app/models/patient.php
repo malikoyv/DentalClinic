@@ -19,29 +19,40 @@ class Patient extends User implements IPatientInterface
     // Funkcja do dodawania nowego pacjenta
     public function addNewPatient($firstName, $lastName, $email, $password)
     {
-        if ($this->isEmailExists($email)) {
-            error_log("Email " . $email . " już istnieje w bazie danych.");
-            return false;
-        }
+        try {
+            $this->db->beginTransaction(); // Start the transaction
 
-        $query = "INSERT INTO " . $this->table_name . " (first_name, last_name, email, password) VALUES (:first_name, :last_name, :email, :password)";
-        $stmt = $this->db->prepare($query);
+            if ($this->isEmailExists($email)) {
+                error_log("Email " . $email . " already exists in the database.");
+                $this->db->rollBack(); // Rollback the transaction
+                return false;
+            }
 
-        $firstName = htmlspecialchars(strip_tags($firstName));
-        $lastName = htmlspecialchars(strip_tags($lastName));
-        $email = htmlspecialchars(strip_tags($email));
-        $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
+            $query = "INSERT INTO " . $this->table_name . " (first_name, last_name, email, password) VALUES (:first_name, :last_name, :email, :password)";
+            $stmt = $this->db->prepare($query);
 
-        $stmt->bindParam(':first_name', $firstName);
-        $stmt->bindParam(':last_name', $lastName);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $passwordHashed);
+            $firstName = htmlspecialchars(strip_tags($firstName));
+            $lastName = htmlspecialchars(strip_tags($lastName));
+            $email = htmlspecialchars(strip_tags($email));
+            $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
 
-        if ($stmt->execute()) {
-            error_log("Pacjent " . $firstName . " " . $lastName . " został dodany do bazy danych.");
-            return true;
-        } else {
-            error_log("Błąd dodawania pacjenta: " . implode(";", $stmt->errorInfo()));
+            $stmt->bindParam(':first_name', $firstName);
+            $stmt->bindParam(':last_name', $lastName);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':password', $passwordHashed);
+
+            if ($stmt->execute()) {
+                error_log("Patient " . $firstName . " " . $lastName . " has been added to the database.");
+                $this->db->commit(); // Commit the transaction
+                return true;
+            } else {
+                error_log("Error adding patient: " . implode(";", $stmt->errorInfo()));
+                $this->db->rollBack(); // Rollback the transaction
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log("Transaction failed: " . $e->getMessage());
+            $this->db->rollBack(); // Rollback the transaction in case of an exception
             return false;
         }
     }

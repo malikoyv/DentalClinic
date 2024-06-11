@@ -27,7 +27,8 @@ session_start();
     </div>
     <h1>Contact information</h1>
     <div>
-        
+        <p>Telefon: +48 111 222 333</p>
+        <p>Email: <a href="mailto:info@dentalclinic.com">info@dentalclinic.com</a></p>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
