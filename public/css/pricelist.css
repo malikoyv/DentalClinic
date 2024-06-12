@@ -56,3 +56,32 @@ body {
 .price {
     color: #4d4d4d;
 }
+
+.grid-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.grid-item {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    overflow:visible;
+}
+
+.grid-item h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #4d4d4d;
+}
+
+.grid-item p {
+    color: #4d4d4d;
+}

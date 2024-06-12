@@ -17,21 +17,24 @@ session_start();
     <div class="price-list">
         <div class="section">
             <h2>diagnostyka</h2>
-            <div class="item">
-                <span class="description">Konsultacja specjalistyczna, badanie</span>
-                <span class="price">150-200 PLN</span>
-            </div>
-            <div class="item">
-                <span class="description">RTG zęba</span>
-                <span class="price">40 PLN</span>
-            </div>
-            <div class="item">
-                <span class="description">Cyfrowe zdjęcie pantomograficzne RTG</span>
-                <span class="price">110 PLN</span>
-            </div>
-            <div class="item">
-                <span class="description">DSD - Cyfrowe projektowanie uśmiechu</span>
-                <span class="price">1500-2000 PLN</span>
+
+            <div class="grid-section">
+                <div class="grid-item">
+                    <h3>Konsultacja specjalistyczna, badanie</h3>
+                    <p>150-200 PLN</p>
+                </div>
+                <div class="grid-item">
+                    <h3>RTG zęba</h3>
+                    <p>40 PLN</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Cyfrowe zdjęcie pantomograficzne RTG</h3>
+                    <p>110 PLN</p>
+                </div>
+                <div class="grid-item">
+                    <h3>DSD - Cyfrowe projektowanie uśmiechu</h3>
+                    <p>1500-2000 PLN</p>
+                </div>
             </div>
         </div>
 
@@ -63,6 +66,7 @@ session_start();
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 </body>
