@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-// Zainicjowanie zmiennych jako pusty ciąg znaków
+// Initialize variables as empty strings
 $email_err = $password_err = $login_err = "";
 
-// Sprawdzenie czy są ustawione zmienne o błędach w sesji
+// Check if session variables for errors are set
 if (isset($_SESSION['login_err'])) {
     $login_err = $_SESSION['login_err'];
     unset($_SESSION['login_err']);
@@ -30,7 +30,7 @@ if (isset($_SESSION['password_err'])) {
     <link rel="stylesheet" href="../../public/css/register_login.css">
     <link rel="stylesheet" href="../../public/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Logowanie</title>
+    <title>Login</title>
 </head>
 
 <body class="bg-light">
@@ -41,16 +41,16 @@ if (isset($_SESSION['password_err'])) {
             <div class="col-md-6">
                 <div class="card my-5">
                     <div class="card-body">
-                        <h2 class="card-title text-center">Dostęp tylko dla pracowników</h2>
+                        <h2 class="card-title text-center">Access for Employees Only</h2>
                         
                         <?php
-                        // Wyświetlenie komunikatu o błędzie logowania
+                        // Display login error message
                         if (!empty($login_err)) {
                             echo '<div class="alert alert-danger">' . $login_err . '</div>';
                         }
                         ?>
                         
-                        <!-- Formularz logowania -->
+                        <!-- Login Form -->
                         <form action="../controllers/dentist_login_controller.php" method="post">
                             <div class="form-group mb-3">
                                 <label class="form-label">Email</label>
@@ -58,12 +58,12 @@ if (isset($_SESSION['password_err'])) {
                                 <span class="invalid-feedback"><?php echo $email_err; ?></span>
                             </div>
                             <div class="form-group mb-3">
-                                <label class="form-label">Hasło</label>
+                                <label class="form-label">Password</label>
                                 <input type="password" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
                                 <span class="invalid-feedback"><?php echo $password_err; ?></span>
                             </div>
                             <div class="form-group mb-4">
-                                <input type="submit" class="btn btn-primary w-100" value="Zaloguj się">
+                                <input type="submit" class="btn btn-primary w-100" value="Login">
                             </div>
                         </form>
                     </div>

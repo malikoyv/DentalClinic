@@ -1,10 +1,10 @@
 <?php
 
-session_start(); // Start sesji
+session_start(); // Start session
 
-// Sprawdzanie, czy użytkownik ma uprawnienia administracyjne
+// Checking if the user has administrative permissions
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'administrator') {
-    // Przekierowanie na stronę logowania, jeśli użytkownik nie jest zalogowany i nie ma uprawnień administratora
+    // Redirect to the login page if the user is not logged in or lacks administrator permissions
     header("location: dentist_login.php");
     exit;
 }
@@ -12,12 +12,12 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
 ?>
 
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin panel</title>
+    <title>Admin Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css" integrity="sha256-ZCK10swXv9CN059AmZf9UzWpJS34XvilDMJ79K+WOgc=" crossorigin="anonymous">
     <link rel="stylesheet" href="../../public/css/styles.css">
@@ -28,59 +28,59 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
     <div class="container mt-4">
         <?php include 'shared_navbar.php'; ?>
         
-        <h1 class="text-center">Admin panel</h1>
+        <h1 class="text-center">Admin Panel</h1>
         
-        <button onclick="toggleSection('add-dentist', true);" class="btn btn-primary m-1">Dodaj Nowego Dentystę</button>
+        <button onclick="toggleSection('add-dentist', true);" class="btn btn-primary m-1">Add New Dentist</button>
         
-        <!-- Formularz dodawania nowego dentysty -->
+        <!-- Form to add a new dentist -->
         <div class="card mt-4 col-md-6" id="add-dentist" style="display:none;">
             <div class="card-header">
-                Formularz dodawania dentysty
+                Dentist Addition Form
             </div>
             <div class="card-body">
                 <form action="../controllers/dentist_add_controller.php" method="post">
-                    <!-- Dane osobowe -->
+                    <!-- Personal information -->
                     <div class="mb-3">
-                        <label for="first_name" class="form-label">Imię</label>
+                        <label for="first_name" class="form-label">First Name</label>
                         <input type="text" class="form-control" id="first_name" name="first_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="last_name" class="form-label">Nazwisko</label>
+                        <label for="last_name" class="form-label">Last Name</label>
                         <input type="text" class="form-control" id="last_name" name="last_name" required>
                     </div>
-                    <!-- Kontakt i dane logowania -->
+                    <!-- Contact and login information -->
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Hasło</label>
+                        <label for="password" class="form-label">Password</label>
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
-                    <!-- Specjalizacja -->
+                    <!-- Specialization -->
                     <div class="mb-3">
-                        <label for="specialization" class="form-label">Specjalizacja</label>
+                        <label for="specialization" class="form-label">Specialization</label>
                         <input type="text" class="form-control" id="specialization" name="specialization">
                     </div>
-                    <button type="submit" class="btn btn-primary">Dodaj Dentystę</button>
-                    <button type="button" onclick="toggleSection('add-dentist', false);" class="btn btn-secondary m-1">Anuluj</button>
+                    <button type="submit" class="btn btn-primary">Add Dentist</button>
+                    <button type="button" onclick="toggleSection('add-dentist', false);" class="btn btn-secondary m-1">Cancel</button>
                 </form>
             </div>
         </div>
         
-        <!-- Lista dentystów -->
+        <!-- Dentist List -->
         <div class="card mt-4">
             <div class="card-header">
-                <h5>Lista Dentystów</h3>
+                <h5>Dentist List</h3>
                 <?php
                     if (isset($_SESSION['error_message'])) {
                         echo '<div class="alert alert-danger">' . $_SESSION['error_message'] . '</div>';
-                        // Usunięcie komunikatu po wyświetleniu
+                        // Removing the message after displaying it
                         unset($_SESSION['error_message']);
                     }
                     if (isset($_SESSION['success_message'])) {
                         echo '<div class="alert alert-success">' . $_SESSION['success_message'] . '</div>';
-                        // Usunięcie komunikatu po wyświetleniu
+                        // Removing the message after displaying it
                         unset($_SESSION['success_message']);
                     }
                     ?>
@@ -99,7 +99,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
                             <?php endif; ?>
                         </div>
                         <div class="card-body">
-                            <!-- Tabela z dentystami -->
+                            <!-- Table displaying dentists -->
                             <?php
                 include 'shared_dentist_list.php';
                 ?>
@@ -109,7 +109,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
     
     
     <script>
-        // Funkcja do pokazywania/ukrywania sekcji
+        // Function to toggle sections
         function toggleSection(sectionId, show) {
             var section = document.getElementById(sectionId);
             if (section) {

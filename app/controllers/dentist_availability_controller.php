@@ -1,79 +1,79 @@
 <?php
 session_start();
 
-// Sprawdzenie, czy użytkownik jest zalogowany jako dentysta
+// Check if the user is logged in as a dentist
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'dentist') {
-    header("location: ../views/dentist_login.php"); // Przekierowanie do strony logowania dentysty, jeśli użytkownik nie ma uprawnień
+    header("location: ../views/dentist_login.php"); // Redirect to the dentist login page if the user does not have permissions
     exit;
 }
 
-// Dołączenie plików konfiguracyjnych i modelu dostępności
+// Include configuration and availability model files
 require_once '../../config/database.php';
 require_once '../models/availability.php';
 
-// Utworzenie połączenia z bazą danych
+// Create a connection to the database
 $database = new Database();
 $db = $database->getConnection();
 $availability = new Availability($db);
 
-// Inicjalizacja zmiennych do przechowywania danych i ewentualnych błędów
+// Initialize variables to store data and potential errors
 $start_time = $end_time = $name = $price = "";
 $start_time_err = $end_time_err = $name_err = $price_err = "";
 
-// Obsługa żądania typu POST
+// Handle POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Pobieranie danych z formularza i usuwanie zbędnych spacji
+    // Get data from the form and trim unnecessary spaces
     $dentist_id = $_SESSION['user_id'];
     $start_time = trim($_POST["start_time"]);
     $end_time = trim($_POST["end_time"]);
     $name = trim($_POST["name"]);
     $price = trim($_POST["price"]);
 
-    // Walidacja czasów startu i końca
+    // Validate start and end times
     if (empty($start_time)) {
-        $start_time_err = "Proszę podać czas rozpoczęcia.";
+        $start_time_err = "Please provide a start time.";
     }
 
     if (empty($end_time)) {
-        $end_time_err = "Proszę podać czas zakończenia.";
+        $end_time_err = "Please provide an end time.";
     }
 
-    // Sprawdzenie, czy czas zakończenia jest późniejszy niż czas rozpoczęcia
+    // Check if end time is later than start time
     if (!empty($start_time) && !empty($end_time) && strtotime($start_time) >= strtotime($end_time)) {
-        $end_time_err = "Czas zakończenia musi być późniejszy niż czas rozpoczęcia.";
+        $end_time_err = "End time must be later than start time.";
     }
 
-    // Sprawdzenie, czy podany czas rozpoczęcia nie jest w przeszłości
+    // Check if the start time is not in the past
     $currentDateTime = date('Y-m-d H:i:s');
     if (!empty($start_time) && strtotime($start_time) < strtotime($currentDateTime)) {
-        $start_time_err = "Czas rozpoczęcia nie może być w przeszłości.";
+        $start_time_err = "Start time cannot be in the past.";
     }
 
-    // Jeśli nie ma błędów, przystąp do tworzenia lub aktualizacji dostępności
+    // If there are no errors, proceed with creating or updating availability
     if (empty($start_time_err) && empty($end_time_err)) {
         $availability->dentist_id = $dentist_id;
         $availability->start_time = $start_time;
         $availability->end_time = $end_time;
 
-        // Sprawdzenie, czy to aktualizacja istniejącej dostępności
+        // Check if this is an update to existing availability
         if (isset($_POST['availability_id']) && !empty($_POST['availability_id'])) {
             $availability->availability_id = $_POST['availability_id'];
             $success = $availability->update();
         } else {
-            // Jeśli nie, to utwórz nową dostępność
+            // If not, create new availability
             $success = $availability->create();
         }
 
-        // Obsługa odpowiedzi po próbie utworzenia lub aktualizacji
+        // Handle response after attempting to create or update
         if ($success) {
-            $_SESSION['success_message'] = "Dostępność została pomyślnie zaktualizowana!";
+            $_SESSION['success_message'] = "Availability successfully updated!";
             header("location: ../views/dentist_panel.php");
             exit;
         } else {
-            echo "Wystąpił błąd podczas aktualizacji dostępności.";
+            echo "An error occurred while updating availability.";
         }
     } else {
-        // Jeśli wystąpiły błędy walidacji, ustaw odpowiednie komunikaty błędów
+        // If validation errors occurred, set appropriate error messages
         $_SESSION['start_time_err'] = $start_time_err;
         $_SESSION['end_time_err'] = $end_time_err;
         header("location: ../views/dentist_panel.php");
@@ -81,5 +81,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Zwolnienie zasobu połączenia z bazą danych
+// Release database connection resource
 unset($db);
+?>

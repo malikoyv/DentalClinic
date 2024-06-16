@@ -1,49 +1,49 @@
 <?php
-error_log("Formularz logowania został wysłany."); // Logowanie próby logowania
-error_log("Email: " . $_POST['email']); // Logowanie przesłanego adresu e-mail
+error_log("Login form has been submitted."); // Log the login attempt
+error_log("Email: " . $_POST['email']); // Log the submitted email address
 
-// Ustawienia wyświetlania błędów PHP (przydatne podczas developmentu)
+// PHP error display settings (useful during development)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
 
-// Dołączenie pliku konfiguracji bazy danych i klasy modelu 'dentist'
+// Include database configuration file and the 'dentist' model class
 require_once '../../config/database.php';
 require_once '../models/dentist.php';
 
-// Utworzenie połączenia z bazą danych
+// Create a connection to the database
 $database = new Database();
 $db = $database->getConnection();
 
-// Inicjalizacja zmiennych do przechowywania danych logowania i ewentualnych błędów
+// Initialize variables to store login data and potential errors
 $email = $password = "";
 $email_err = $password_err = "";
 
-// Obsługa żądania typu POST
+// Handle POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Walidacja emaila
+    // Validate email
     if (empty(trim($_POST["email"]))) {
-        $email_err = "Proszę podać email.";
+        $email_err = "Please enter an email.";
     } else {
         $email = trim($_POST["email"]);
     }
 
-    // Walidacja hasła
+    // Validate password
     if (empty(trim($_POST["password"]))) {
-        $password_err = "Proszę podać hasło.";
+        $password_err = "Please enter a password.";
     } else {
         $password = trim($_POST["password"]);
     }
 
-    // Jeśli nie ma błędów walidacji, przystąp do logowania
+    // If there are no validation errors, proceed with login
     if (empty($email_err) && empty($password_err)) {
         $user = new Dentist($db);
-        // Próba logowania użytkownika
+        // Attempt to log in the user
         if ($user->login($email, $password)) {
-            // Sprawdzenie roli użytkownika i przekierowanie do odpowiedniego panelu
+            // Check user role and redirect to the appropriate panel
             if ($_SESSION["role"] == 'dentist') {
                 header("location: ../views/dentist_panel.php");
                 exit;
@@ -51,22 +51,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("location: ../views/admin_panel.php");
                 exit;
             } else {
-                // Tutaj można dodać obsługę innych ról lub domyślne przekierowanie
+                // Additional roles or default redirection can be handled here
             }
         } else {
-            // Logowanie nieudane, ustawienie komunikatu o błędzie
-            $_SESSION['login_err'] = "Niepoprawny email lub hasło.";
+            // Login failed, set error message
+            $_SESSION['login_err'] = "Invalid email or password.";
             header("location: ../views/dentist_login.php");
             exit;
         }
     } else {
-        // W przypadku błędów walidacji, przekierowanie z powrotem do formularza logowania
+        // In case of validation errors, redirect back to the login form
         $_SESSION['email_err'] = $email_err;
         $_SESSION['password_err'] = $password_err;
         header("location: ../views/dentist_login.php");
         exit;
     }
 
-    // Zamykanie połączenia z bazą danych
+    // Close the database connection
     unset($db);
 }
+?>

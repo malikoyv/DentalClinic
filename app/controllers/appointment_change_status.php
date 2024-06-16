@@ -1,43 +1,44 @@
 <?php
-// Rozpoczęcie nowej sesji lub wznowienie istniejącej
+// Start a new session or resume an existing one
 session_start();
 
-// Wymagane pliki: konfiguracja bazy danych i model 'appointment'
+// Required files: database configuration and 'appointment' model
 require_once '../config/database.php';
 require_once '../models/appointment.php';
 
-// Sprawdzenie, czy metoda żądania to POST
+// Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sprawdzenie, czy użytkownik jest zalogowany i ma rolę 'dentist'
+    // Check if the user is logged in and has the role 'dentist'
     if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'dentist') {
-        // Jeśli nie, zwróć błąd
-        echo json_encode(["error" => "Nieautoryzowany dostęp"]);
+        // If not, return an error
+        echo json_encode(["error" => "Unauthorized access"]);
         exit;
     }
 
-    // Pobranie ID wizyty i nowego statusu z danych POST
+    // Retrieve appointment ID and new status from POST data
     $appointmentId = $_POST['appointment_id'];
     $newStatus = $_POST['new_status'];
 
-    // Utworzenie nowego połączenia z bazą danych
+    // Create a new database connection
     $database = new Database();
     $db = $database->getConnection();
 
-    // Utworzenie nowego obiektu Appointment
+    // Create a new Appointment object
     $appointment = new Appointment($db);
 
-    // Próba zmiany statusu wizyty
+    // Attempt to change the status of the appointment
     $result = $appointment->changeStatus($appointmentId, $newStatus);
 
-    // Sprawdzenie, czy operacja się powiodła
+    // Check if the operation was successful
     if ($result) {
-        // Jeśli tak, zwróć wiadomość o sukcesie
-        echo json_encode(['success' => true, 'message' => "Status wizyty został zmieniony."]);
+        // If yes, return a success message
+        echo json_encode(['success' => true, 'message' => "Appointment status has been changed."]);
     } else {
-        // Jeśli nie, zwróć błąd
-        echo json_encode(['error' => 'Nie udało się zmienić statusu wizyty']);
+        // If not, return an error
+        echo json_encode(['error' => 'Failed to change appointment status']);
     }
 } else {
-    // Jeśli metoda żądania nie jest POST, zwrócenie błędu
-    echo json_encode(['error' => 'Nieobsługiwana metoda żądania']);
+    // If the request method is not POST, return an error
+    echo json_encode(['error' => 'Unsupported request method']);
 }
+?>

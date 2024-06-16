@@ -1,15 +1,17 @@
 <?php
-require_once 'user.php';
-require_once 'IDentistInterface.php';
-require_once 'DentistTrait.php';
+
+require_once 'user.php'; // Include the base User class
+require_once 'IDentistInterface.php'; // Include the Dentist Interface
+require_once 'DentistTrait.php'; // Include the Dentist Trait for additional methods
 
 class Dentist extends User implements IDentistInterface
 {
-    use DentistTrait;
-    private $db; // Prywatna zmienna do przechowywania połączenia z bazą danych
-    private $table_name = "dentists"; // Nazwa tabeli w bazie danych
+    use DentistTrait; // Use the DentistTrait for additional methods
 
-    // Atrybuty klasy odpowiadające kolumnom w tabeli 'dentists'
+    private $db; // Private variable to hold the database connection
+    private $table_name = "dentists"; // Table name in the database
+
+    // Attributes corresponding to columns in 'dentists' table
     public $dentist_id;
     public $email;
     public $password;
@@ -18,38 +20,36 @@ class Dentist extends User implements IDentistInterface
     public $specialization;
     public $role;
 
-    // Konstruktor z połączeniem do bazy danych
+    // Constructor with database connection
     public function __construct($db)
     {
         $this->db = $db;
     }
-    
-    // Funkcja do tworzenia nowego dentysty
+
+    // Function to create a new dentist
     public function create()
     {
-        // Zapytanie SQL do wstawienia nowego rekordu
+        // SQL query to insert a new record
         $query = "INSERT INTO " . $this->table_name . "
               SET first_name=:first_name, last_name=:last_name, email=:email, password=:password, specialization=:specialization";
 
-        // Przygotowanie zapytania
-        $stmt = $this->db->prepare($query);
+        $stmt = $this->db->prepare($query); // Prepare the statement
 
-        // Oczyszczenie i bindowanie danych
+        // Sanitize and bind data
         $this->first_name = htmlspecialchars(strip_tags($this->first_name));
         $this->last_name = htmlspecialchars(strip_tags($this->last_name));
         $this->email = htmlspecialchars(strip_tags($this->email));
-        // Hashowanie hasła
-        $this->password = password_hash($this->password, PASSWORD_DEFAULT);
+        $this->password = password_hash($this->password, PASSWORD_DEFAULT); // Hash the password
         $this->specialization = htmlspecialchars(strip_tags($this->specialization));
 
-        // Bindowanie zmiennych
+        // Bind parameters
         $stmt->bindParam(":first_name", $this->first_name);
         $stmt->bindParam(":last_name", $this->last_name);
         $stmt->bindParam(":email", $this->email);
         $stmt->bindParam(":password", $this->password);
         $stmt->bindParam(":specialization", $this->specialization);
 
-        // Wykonanie zapytania
+        // Execute the query
         if ($stmt->execute()) {
             return true;
         }
@@ -57,31 +57,31 @@ class Dentist extends User implements IDentistInterface
         return false;
     }
 
-    // Funkcja, która odpowiada za logowanie dentysty
+    // Function to log in a dentist
     public function login($email, $password)
     {
-        // Zapytanie SQL do pobrania informacji o dentystach na podstawie emaila
+        // SQL query to fetch dentist information based on email
         $query = "SELECT dentist_id, first_name, last_name, email, password, role FROM " . $this->table_name . " WHERE email = :email";
 
-        $stmt = $this->db->prepare($query); // Przygotowanie zapytania
-        $email = htmlspecialchars(strip_tags($email)); // Oczyszczenie i escapowanie emaila
-        $stmt->bindParam(':email', $email); // Przypisanie emaila do zapytania
+        $stmt = $this->db->prepare($query); // Prepare the statement
+        $email = htmlspecialchars(strip_tags($email)); // Sanitize and escape email
+        $stmt->bindParam(':email', $email); // Bind email to the query
 
-        $stmt->execute(); // Wykonanie zapytania
+        $stmt->execute(); // Execute the query
 
         if ($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC); // Pobranie wyników
+            $row = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch results
 
-            // Przypisanie danych do zmiennych
+            // Assign data to variables
             $dentist_id = $row['dentist_id'];
             $hashed_password = $row['password'];
             $first_name = $row['first_name'];
             $last_name = $row['last_name'];
             $role = $row['role'];
 
-            // Weryfikacja hasła
+            // Verify password
             if (password_verify($password, $hashed_password)) {
-                // Ustawienie zmiennych sesji
+                // Set session variables
                 $_SESSION["loggedin"] = true;
                 $_SESSION["user_id"] = $dentist_id;
                 $_SESSION["email"] = $email;
@@ -91,54 +91,51 @@ class Dentist extends User implements IDentistInterface
 
                 return true;
             } else {
-                return false; // Błędne hasło
+                return false; // Incorrect password
             }
         } else {
-            return false; // Brak dentysty o podanym emailu
+            return false; // Dentist with given email does not exist
         }
     }
 
-    // Funkcja, która pobiera informacje o dentyście na podstawie ID
+    // Function to get dentist information by ID
     public function getDentistById($dentist_id)
     {
-        // Zapytanie SQL do pobrania informacji o dentystach na podstawie ID
+        // SQL query to fetch dentist information by ID
         $query = "SELECT * FROM dentists WHERE dentist_id = :dentist_id";
 
-        $stmt = $this->db->prepare($query); // Przygotowanie zapytania
-        $stmt->bindParam(':dentist_id', $dentist_id); // Przypisanie ID dentysty do zapytania
-        $stmt->execute(); // Wykonanie zapytania
+        $stmt = $this->db->prepare($query); // Prepare the statement
+        $stmt->bindParam(':dentist_id', $dentist_id); // Bind dentist ID to the query
+        $stmt->execute(); // Execute the query
 
         if ($stmt->rowCount() == 1) {
-            return $stmt->fetch(PDO::FETCH_ASSOC); // Zwrócenie informacji o dentyście
+            return $stmt->fetch(PDO::FETCH_ASSOC); // Return dentist information
         } else {
-            return false; // Brak dentysty o podanym ID
+            return false; // Dentist with given ID not found
         }
     }
 
-    // Funkcja, która informacje o wszystkich dentystach
+    // Function to read all dentists
     public function readAll()
     {
-        // Zapytanie SQL do pobrania wszystkich dentystów
+        // SQL query to fetch all dentists
         $query = "SELECT dentist_id, first_name, last_name, email, role, specialization FROM " . $this->table_name . " ORDER BY last_name, first_name";
 
-        // Przygotowanie zapytania
-        $stmt = $this->db->prepare($query);
+        $stmt = $this->db->prepare($query); // Prepare the statement
+        $stmt->execute(); // Execute the query
 
-        // Wykonanie zapytania
-        $stmt->execute();
-
-        return $stmt; // Zwrócenie wyników zapytania
+        return $stmt; // Return query results
     }
 
-    // Funkcja, która aktualizuje dane dentysty
+    // Function to update dentist profile
     public function updateProfile($dentistId, $firstName, $lastName, $email, $specialization)
     {
-        // Sprawdzenie, czy email jest już używany przez innego dentystę
+        // Check if email is already used by another dentist
         if ($this->isEmailUsedByAnotherDentist($dentistId, $email)) {
-            return false; // Jeśli tak, zwróć false
+            return false; // If yes, return false
         }
 
-        // Zapytanie SQL do aktualizacji profilu dentysty
+        // SQL query to update dentist profile
         $query = "UPDATE " . $this->table_name . " 
           SET first_name = :first_name, 
               last_name = :last_name, 
@@ -146,53 +143,47 @@ class Dentist extends User implements IDentistInterface
               specialization = :specialization
           WHERE dentist_id = :dentist_id";
 
-        // Przygotowanie zapytania
-        $stmt = $this->db->prepare($query);
-        // Oczyszczanie i przypisywanie danych
+        $stmt = $this->db->prepare($query); // Prepare the statement
+
+        // Sanitize and bind data
         $firstName = htmlspecialchars(strip_tags($firstName));
         $lastName = htmlspecialchars(strip_tags($lastName));
         $email = htmlspecialchars(strip_tags($email));
-        // Przypisywanie danych do zapytania
         $stmt->bindParam(':first_name', $firstName);
         $stmt->bindParam(':last_name', $lastName);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':specialization', $specialization);
         $stmt->bindParam(':dentist_id', $dentistId);
 
-        // Wykonanie zapytania
+        // Execute the query
         if ($stmt->execute()) {
-            return true; // Powodzenie aktualizacji
+            return true; // Update successful
         } else {
-            return false; // Niepowodzenie aktualizacji
+            return false; // Update failed
         }
     }
 
-
-
-    // Funkcja, która usuwa dentystę z bazy danych
+    // Function to delete a dentist from the database
     public function delete($dentistId)
     {
-        // Zapytanie SQL do usunięcia dentysty
+        // SQL query to delete a dentist
         $query = "DELETE FROM " . $this->table_name . " WHERE dentist_id = :dentist_id";
 
-        // Przygotowanie zapytania
-        $stmt = $this->db->prepare($query);
+        $stmt = $this->db->prepare($query); // Prepare the statement
 
-        // Oczyszczenie i bindowanie danych
+        // Sanitize and bind data
         $this->dentist_id = htmlspecialchars(strip_tags($dentistId));
-        $stmt->bindParam(
-            ':dentist_id',
-            $this->dentist_id
-        );
+        $stmt->bindParam(':dentist_id', $this->dentist_id);
 
-        // Wykonanie zapytania
+        // Execute the query
         if ($stmt->execute()) {
-            return true; // Powodzenie aktualizacji
+            return true; // Delete successful
         }
-        return false; // Niepowodzenie aktualizacji
+
+        return false; // Delete failed
     }
 
-    // Funkcja sprawdzająca czy dany dentysta ma rolę administrator
+    // Function to check if a dentist has administrator role
     public function isAdministrator($dentist_id)
     {
         $query = "SELECT role FROM " . $this->table_name . " WHERE dentist_id = :dentist_id";
@@ -209,72 +200,70 @@ class Dentist extends User implements IDentistInterface
         return false;
     }
 
-    // Funkcja sprawdzająca czy podany email istnieje w bazie danych
+    // Function to check if email exists in the database
     public function isEmailExists($email)
     {
-        // Zapytanie SQL do sprawdzenia, czy email istnieje
+        // SQL query to check if email exists
         $query = "SELECT COUNT(*) FROM " . $this->table_name . " WHERE email = :email";
-        // Przygotowanie zapytania
-        $stmt = $this->db->prepare($query);
 
-        // Oczyszczenie i bindowanie danych
-        $stmt->bindParam(":email", $email);
-        $stmt->execute(); // Wykonanie zapytania
+        $stmt = $this->db->prepare($query); // Prepare the statement
+        $stmt->bindParam(":email", $email); // Bind email parameter
+        $stmt->execute(); // Execute the query
 
-        // Pobranie liczby wierszy
+        // Check if email exists
         if ($stmt->fetchColumn() > 0) {
-            return true; // Email już istnieje
+            return true; // Email exists
         } else {
-            return false; // Email nie istnieje
+            return false; // Email does not exist
         }
     }
 
-    // Funkcja sprawdzająca czy podany email jest używany przez innego dentystę
+    // Function to check if email is used by another dentist
     public function isEmailUsedByAnotherDentist($dentistId, $email)
     {
-        // Zapytanie SQL do sprawdzenia, czy email jest używany przez innego dentystę
+        // SQL query to check if email is used by another dentist
         $query = "SELECT COUNT(*) FROM " . $this->table_name . " 
                   WHERE email = :email AND dentist_id != :dentist_id";
 
-        // Przygotowanie zapytania
-        $stmt = $this->db->prepare($query);
-        // Oczyszczenie i bindowanie danych
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':dentist_id', $dentistId);
+        $stmt = $this->db->prepare($query); // Prepare the statement
+        $stmt->bindParam(':email', $email); // Bind email parameter
+        $stmt->bindParam(':dentist_id', $dentistId); // Bind dentist ID parameter
+        $stmt->execute(); // Execute the query
 
-        // Wykonanie zapytania
-        $stmt->execute();
-        // Pobranie liczby wierszy
+        // Check if email is used by another dentist
         $count = $stmt->fetchColumn();
-
-        // Jeśli liczba wierszy jest większa od 0, to znaczy, że email jest używany przez innego dentystę
         return $count > 0;
     }
 
-    // Add the method to send a message
+    // Function to send a message
     public function sendMessage($conversationId, $message)
     {
+        // SQL query to insert a message
         $query = "INSERT INTO messages (conversation_id, sender_id, sender_role, message_text) VALUES (:conversation_id, :sender_id, 'doctor', :message_text)";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':conversation_id', $conversationId);
-        $stmt->bindParam(':sender_id', $_SESSION['user_id']);
-        $stmt->bindParam(':message_text', $message);
-        return $stmt->execute();
+
+        $stmt = $this->db->prepare($query); // Prepare the statement
+        $stmt->bindParam(':conversation_id', $conversationId); // Bind conversation ID parameter
+        $stmt->bindParam(':sender_id', $_SESSION['user_id']); // Bind sender ID (logged-in user ID)
+        $stmt->bindParam(':message_text', $message); // Bind message text parameter
+
+        return $stmt->execute(); // Execute the query and return true/false
     }
 
-    // Add the method to get messages
-    public function getMessages($conversationId) {
+    // Function to get messages from a conversation
+    public function getMessages($conversationId)
+    {
+        // SQL query to fetch messages by conversation ID
         $query = "SELECT * FROM messages WHERE conversation_id = :conversationId ORDER BY created_at ASC";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':conversationId', $conversationId);
-        $stmt->execute();
-    
-        $messages = [];
+
+        $stmt = $this->db->prepare($query); // Prepare the statement
+        $stmt->bindParam(':conversationId', $conversationId); // Bind conversation ID parameter
+        $stmt->execute(); // Execute the query
+
+        $messages = []; // Initialize an empty array for messages
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $messages[] = $row;
+            $messages[] = $row; // Add each message to the array
         }
-        return $messages;
+
+        return $messages; // Return array of messages
     }
-    
-    
 }

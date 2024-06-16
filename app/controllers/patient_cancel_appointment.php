@@ -1,25 +1,26 @@
 <?php
-session_start(); // Rozpoczęcie sesji
+session_start(); // Start the session
 
-require_once '../../config/database.php'; // Dołączenie pliku konfiguracji bazy danych
-require_once '../models/appointment.php'; // Dołączenie modelu 'appointment'
+require_once '../../config/database.php'; // Include the database configuration file
+require_once '../models/appointment.php'; // Include the 'appointment' model
 
-// Sprawdzenie, czy żądanie jest typu POST i czy ID wizyty zostało przesłane
+// Check if the request method is POST and if appointment_id is provided
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointment_id'])) {
-    $appointment_id = $_POST['appointment_id']; // Pobranie ID wizyty z formularza
+    $appointment_id = $_POST['appointment_id']; // Get the appointment ID from the form
 
     $database = new Database();
-    $db = $database->getConnection(); // Utworzenie połączenia z bazą danych
+    $db = $database->getConnection(); // Create a new database connection
 
-    $appointment = new Appointment($db); // Utworzenie obiektu Appointment
-    $appointment->appointment_id = $appointment_id; // Przypisanie ID wizyty do obiektu
+    $appointment = new Appointment($db); // Create an instance of Appointment
+    $appointment->appointment_id = $appointment_id; // Assign the appointment ID to the object
 
-    // Próba anulowania wizyty przez pacjenta
+    // Attempt to cancel the appointment by the patient
     if ($appointment->cancelByPatient()) {
-        // Jeśli anulowanie się powiedzie, zwróć informację o sukcesie
-        echo json_encode(["message" => "Twoja wizyta została anulowana"]);
+        // If cancellation is successful, return success message
+        echo json_encode(["message" => "Your appointment has been canceled"]);
     } else {
-        // W przypadku niepowodzenia, zwróć informację o błędzie
-        echo json_encode(["message" => "Nie udało się anulować wizyty"]);
+        // If cancellation fails, return error message
+        echo json_encode(["message" => "Failed to cancel the appointment"]);
     }
 }
+?>

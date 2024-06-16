@@ -1,14 +1,14 @@
 <?php
 
-session_start(); // Rozpoczęcie sesji
+session_start(); // Start session
 
-// Zadeklarowanie zmiennych i ustawienie ich wartości na pusty ciąg znaków
+// Initialize variables and set them to empty strings
 $first_name = $first_name_err = "";
 $last_name = $last_name_err = "";
 $email = $email_err = "";
 $password = $password_err = "";
 
-// Sprawdzenie czy dane zostały ustawione i przypisanie ich do zmiennych
+// Check if viewData is set and assign values to variables
 if (isset($viewData)) {
     $first_name = $viewData['first_name'];
     $first_name_err = $viewData['first_name_err'];
@@ -21,7 +21,7 @@ if (isset($viewData)) {
 ?>
 
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -29,7 +29,7 @@ if (isset($viewData)) {
     <link rel="stylesheet" href="../../public/css/register_login.css">
     <link rel="stylesheet" href="../../public/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <title>Rejestracja</title>
+    <title>Registration</title>
 </head>
 
 <body class="bg-light">
@@ -39,18 +39,18 @@ if (isset($viewData)) {
         <div class="row justify-content-center">
             <div class="col-md-6">
 
-                <!-- Formularz rejestracji pacjenta -->
+                <!-- Patient registration form -->
                 <div class="card my-5">
                     <div class="card-body">
-                        <h2 class="card-title text-center mb-4">Formularz rejestracji</h2>
+                        <h2 class="card-title text-center mb-4">Registration Form</h2>
                         <form action="../controllers/patient_add_controller.php" method="post">
                             <div class="form-group mb-3">
-                                <label class="form-label">Imię</label>
+                                <label class="form-label">First Name</label>
                                 <input type="text" name="first_name" class="form-control <?php echo (!empty($first_name_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $first_name; ?>">
                                 <span class="invalid-feedback"><?php echo $first_name_err; ?></span>
                             </div>
                             <div class="form-group mb-3">
-                                <label class="form-label">Nazwisko</label>
+                                <label class="form-label">Last Name</label>
                                 <input type="text" name="last_name" class="form-control <?php echo (!empty($last_name_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $last_name; ?>">
                                 <span class="invalid-feedback"><?php echo $last_name_err; ?></span>
                             </div>
@@ -60,14 +60,14 @@ if (isset($viewData)) {
                                 <span class="invalid-feedback"><?php echo $email_err; ?></span>
                             </div>
                             <div class="form-group mb-3">
-                                <label class="form-label">Hasło</label>
+                                <label class="form-label">Password</label>
                                 <input type="password" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
                                 <span class="invalid-feedback"><?php echo $password_err; ?></span>
                             </div>
                             <div class="form-group mb-4">
-                                <input type="submit" class="btn btn-primary w-100" value="Zarejestruj się">
+                                <input type="submit" class="btn btn-primary w-100" value="Register">
                             </div>
-                            <p class="text-center">Masz już konto? <a href="patient_login.php">Zaloguj się</a></p>
+                            <p class="text-center">Already have an account? <a href="patient_login.php">Log in</a></p>
                         </form>
                     </div>
                 </div>

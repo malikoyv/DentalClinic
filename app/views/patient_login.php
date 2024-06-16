@@ -1,6 +1,6 @@
 <?php
 session_start();
-// Sprawdzanie, czy są błędy logowania do wyświetlenia
+// Checking for login errors to display
 $email_err = $password_err = $login_err = "";
 
 if (isset($_SESSION['login_err'])) {
@@ -20,7 +20,7 @@ if (isset($_SESSION['password_err'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -28,7 +28,7 @@ if (isset($_SESSION['password_err'])) {
     <link rel="stylesheet" href="../../public/css/register_login.css">
     <link rel="stylesheet" href="../../public/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Logowanie</title>
+    <title>Login</title>
 </head>
 
 <body class="bg-light">
@@ -39,15 +39,15 @@ if (isset($_SESSION['password_err'])) {
             <div class="col-md-6">
                 <div class="card my-5">
                     <div class="card-body">
-                        <h2 class="card-title text-center">Logowanie</h2>
+                        <h2 class="card-title text-center">Login</h2>
                         <?php
-                        // Wyświetlenie komunikatu o błędzie logowania
+                        // Display login error message
                         if (!empty($login_err)) {
                             echo '<div class="alert alert-danger">' . $login_err . '</div>';
                         }
                         ?>
 
-                        <!-- Formularz logowania pacjenta -->
+                        <!-- Patient login form -->
                         <form action="../controllers/patient_login_controller.php" method="post">
                             <div class="form-group mb-3">
                                 <label class="form-label">Email</label>
@@ -55,14 +55,14 @@ if (isset($_SESSION['password_err'])) {
                                 <span class="invalid-feedback"><?php echo $email_err; ?></span>
                             </div>
                             <div class="form-group mb-3">
-                                <label class="form-label">Hasło</label>
+                                <label class="form-label">Password</label>
                                 <input type="password" name="password" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
                                 <span class="invalid-feedback"><?php echo $password_err; ?></span>
                             </div>
                             <div class="form-group mb-4">
-                                <input type="submit" class="btn btn-primary w-100" value="Zaloguj się">
+                                <input type="submit" class="btn btn-primary w-100" value="Login">
                             </div>
-                            <p class="text-center">Nie masz konta? <a href="patient_register.php">Zarejestruj się!</a></p>
+                            <p class="text-center">Don't have an account? <a href="patient_register.php">Register!</a></p>
                         </form>
                     </div>
                 </div>

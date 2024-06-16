@@ -1,42 +1,43 @@
 <?php
-// Zainicjowanie sesji
+// Start the session
 session_start();
 
-// Sprawdzenie czy użytkownik jest zalogowany, jeśli nie to przekierowanie do strony logowania
+// Check if the user is logged in, if not, redirect to the login page
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'dentist') {
     header("location: ../views/dentist_login.php");
     exit;
 }
 
-// Sprawdzenie czy parametr availability_id został przekazany
+// Check if the parameter availability_id has been passed
 if (isset($_GET['availability_id'])) {
 
-    // Dołączenie pliku z konfiguracją połączenia do bazy danych
+    // Include the file with the database connection configuration
     require_once '../../config/database.php';
 
-    // Dołączenie pliku availability.php zawierającego definicję klasy Availability
+    // Include the availability.php file containing the definition of the Availability class
     require_once '../models/availability.php';
 
-    // Utworzenie połączenia do bazy danych
+    // Create a database connection
     $database = new Database();
     $db = $database->getConnection();
 
-    // Utworzenie obiektu klasy Availability
+    // Create an object of the Availability class
     $availability = new Availability($db);
 
-    // Ustawienie availability_id obiektu klasy Availability na podstawie parametru availability_id przekazanego w adresie URL
+    // Set the availability_id of the Availability object based on the availability_id parameter passed in the URL
     $availability->availability_id = $_GET['availability_id'];
 
-    // Usunięcie dostępności
+    // Delete the availability
     if ($availability->delete()) {
-        // Ustawienie komunikatu o sukcesie
-        $_SESSION['success_message'] = "Dostępność została usunięta.";
+        // Set the success message
+        $_SESSION['success_message'] = "Availability has been deleted.";
     } else {
-        // Ustawienie komunikatu o błędzie
-        $_SESSION['error_message'] = "Nie udało się usunąć dostępności.";
+        // Set the error message
+        $_SESSION['error_message'] = "Failed to delete availability.";
     }
 }
 
-// Przekierowanie do strony z panelem dentysty
+// Redirect to the dentist panel page
 header("location: ../views/dentist_panel.php");
 exit;
+?>

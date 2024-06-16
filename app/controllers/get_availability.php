@@ -3,40 +3,40 @@ require_once '../../config/database.php';
 require_once '../models/availability.php';
 require_once '../models/appointment.php';
 
-// Utworzenie połączenia z bazą danych
+// Establish database connection
 $database = new Database();
 $db = $database->getConnection();
 
-// Inicjalizacja obiektów modeli
+// Initialize model objects
 $availability = new Availability($db);
 $appointments = new Appointment($db);
 
-// Pobranie przyszłych dostępnych terminów
+// Get future available slots
 $availableSlots = $availability->getFutureAvailability();
 
-// Pobranie przyszłych zarezerwowanych wizyt
+// Get future booked appointments
 $bookedAppointments = $appointments->getFutureAppointments();
 
-// Filtracja dostępności, biorąc pod uwagę zarezerwowane wizyty
+// Filter availability considering booked appointments
 $filteredAvailability = [];
 foreach ($availableSlots as $slot) {
     $startTime = new DateTime($slot['start_time']);
     $endTime = new DateTime($slot['end_time']);
 
-    // Dzielenie dostępności na sesje 50-minutowe z 5-minutowymi przerwami
+    // Divide availability into 50-minute sessions with 5-minute breaks
     while ($startTime < $endTime) {
         $sessionEnd = clone $startTime;
-        $sessionEnd->add(new DateInterval('PT55M')); // Długość sesji
+        $sessionEnd->add(new DateInterval('PT55M')); // Session length
 
         $nextSessionStart = clone $sessionEnd;
-        $nextSessionStart->add(new DateInterval('PT5M')); // Przerwa między sesjami
+        $nextSessionStart->add(new DateInterval('PT5M')); // Break between sessions
 
-        // Sprawdzenie, czy termin jest zarezerwowany
+        // Check if the slot is booked
         $isBooked = false;
         foreach ($bookedAppointments as $appointment) {
             $appointmentTime = new DateTime($appointment['appointment_date']);
 
-            // Sprawdzenie, czy termin wizyty pokrywa się z sesją
+            // Check if appointment time overlaps with the session
             if (
                 $slot['dentist_id'] == $appointment['dentist_id'] &&
                 $appointmentTime >= $startTime && $appointmentTime < $sessionEnd &&
@@ -47,7 +47,7 @@ foreach ($availableSlots as $slot) {
             }
         }
 
-        // Jeśli termin nie jest zarezerwowany, dodaj do listy dostępności
+        // If slot is not booked, add to filtered availability list
         if (!$isBooked) {
             $filteredAvailability[] = [
                 'dentist_id' => $slot['dentist_id'],
@@ -60,9 +60,10 @@ foreach ($availableSlots as $slot) {
             ];
         }
 
-        $startTime = $nextSessionStart; // Przejście do następnej sesji
+        $startTime = $nextSessionStart; // Move to next session
     }
 }
 
-// Zwrócenie sformatowanych danych dostępności w formacie JSON
+// Return formatted availability data in JSON format
 echo json_encode($filteredAvailability);
+?>

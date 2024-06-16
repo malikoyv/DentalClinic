@@ -1,12 +1,12 @@
 <?php
-session_start(); // Rozpoczęcie sesji
+session_start();
 
-// Wyczyszczenie tablicy sesji
+// Clearing session array
 $_SESSION = array();
 
-// Zniszczenie sesji
+// Session destroying
 session_destroy();
 
-// Przekierowanie użytkownika do strony głównej
+// Redirecting to the main page
 header("location: ../views/index.php");
-exit; // Zakończenie skryptu
+exit; // Script ending

@@ -16,53 +16,53 @@ session_start();
     <h1>Price list</h1>
     <div class="price-list">
         <div class="section">
-            <h2>diagnostyka</h2>
+            <h2>diagnostics</h2>
 
             <div class="grid-section">
                 <div class="grid-item">
-                    <h3>Konsultacja specjalistyczna, badanie</h3>
+                    <h3>Specialist consultation, examination</h3>
                     <p>150-200 PLN</p>
                 </div>
                 <div class="grid-item">
-                    <h3>RTG zęba</h3>
+                    <h3>Dental X-ray</h3>
                     <p>40 PLN</p>
                 </div>
                 <div class="grid-item">
-                    <h3>Cyfrowe zdjęcie pantomograficzne RTG</h3>
+                    <h3>Digital panoramic X-ray (panorex)</h3>
                     <p>110 PLN</p>
                 </div>
                 <div class="grid-item">
-                    <h3>DSD - Cyfrowe projektowanie uśmiechu</h3>
+                    <h3>DSD - Digital Smile Design</h3>
                     <p>1500-2000 PLN</p>
                 </div>
             </div>
         </div>
 
         <div class="section">
-            <h2>stomatologia zachowawcza</h2>
+            <h2>conservative dentistry</h2>
             <div class="item">
-                <span class="description">Higienizacja (scaling, piaskowanie, polishing, fluoryzacja, instruktaż higieny)</span>
+                <span class="description">Hygienization (scaling, sandblasting, polishing, fluoride treatment, hygiene instruction)</span>
                 <span class="price">350-450 PLN</span>
             </div>
             <div class="item">
-                <span class="description">Wybielanie gabinetowe</span>
+                <span class="description">In-office teeth whitening</span>
                 <span class="price">1400 PLN</span>
             </div>
             <div class="item">
-                <span class="description">Wybielanie nakładkowe</span>
+                <span class="description">Home teeth whitening kit</span>
                 <span class="price">1200 PLN</span>
             </div>
             <div class="item">
-                <span class="description">Wypełnienie</span>
+                <span class="description">Tooth filling</span>
                 <span class="price">350-550 PLN</span>
             </div>
             <div class="item">
-                <span class="description">Odbudowa zęba na włóknie szklanym</span>
+                <span class="description">Fiber-reinforced tooth restoration</span>
                 <span class="price">450-650 PLN</span>
             </div>
             <div class="item">
                 <span class="description">Bonding</span>
-                <span class="price">od 700 PLN</span>
+                <span class="price">from 700 PLN</span>
             </div>
         </div>
     </div>

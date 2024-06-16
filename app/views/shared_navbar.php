@@ -30,13 +30,13 @@
                             if (isset($_SESSION['role'])) {
                                 switch ($_SESSION['role']) {
                                     case 'administrator':
-                                        echo '<a class="dropdown-item" href="admin_panel.php">Panel administratora</a>';
+                                        echo '<a class="dropdown-item" href="admin_panel.php">Administrator Panel</a>';
                                         break;
                                     case 'patient':
-                                        echo '<a class="dropdown-item" href="patient_panel.php">Panel pacjenta</a>';
+                                        echo '<a class="dropdown-item" href="patient_panel.php">Patient Panel</a>';
                                         break;
                                     case 'dentist':
-                                        echo '<a class="dropdown-item" href="dentist_panel.php">Panel dentysty</a>';
+                                        echo '<a class="dropdown-item" href="dentist_panel.php">Dentist Panel</a>';
                                         break;
                                 }
                             }
@@ -54,7 +54,7 @@
                     <a class="nav-link" href="index.php#news">News</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link" href="pricelist.php">Price list</a>
+                    <a class="nav-link" href="pricelist.php">Price List</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link" href="contact.php">Contact</a>
@@ -63,8 +63,8 @@
             <span class="nav-item">
                 <?php
                 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin']) {
-                    $firstName = $_SESSION['first_name'] ?? 'Gość';
-                    $role = $_SESSION['role'] ?? 'nieokreślona rola';
+                    $firstName = $_SESSION['first_name'] ?? 'Guest';
+                    $role = $_SESSION['role'] ?? 'undefined role';
                     switch ($role) {
                         case 'administrator':
                             $translatedRole = 'administrator';
@@ -78,14 +78,14 @@
                         default:
                             $translatedRole = 'unnamed role';
                     }
-                    echo "Witaj <strong>" . htmlspecialchars($firstName) . "</strong>! You're logged in as <strong>" . htmlspecialchars($translatedRole) . "</strong>.";
+                    echo "Welcome <strong>" . htmlspecialchars($firstName) . "</strong>! You're logged in as <strong>" . htmlspecialchars($translatedRole) . "</strong>.";
                 }
                 ?>
             </span>
             <span class="nav-item">
                 <?php
                 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin']) {
-                    echo '<a class="btn btn-light" href="../controllers/logout_controller.php">Wyloguj się</a>';
+                    echo '<a class="btn btn-light" href="../controllers/logout_controller.php">Log out</a>';
                 }
                 ?>
             </span>

@@ -195,18 +195,19 @@ class Patient extends User implements IPatientInterface
         }
     }
 
-    public function getMessages($conversationId) {
+    // Pobieranie wiadomości
+    public function getMessages($conversationId)
+    {
         $query = "SELECT * FROM messages WHERE conversation_id = :conversationId ORDER BY created_at ASC";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':conversationId', $conversationId);
         $stmt->execute();
-    
+
         $messages = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $messages[] = $row;
         }
         return $messages;
     }
-    
 }
 ?>

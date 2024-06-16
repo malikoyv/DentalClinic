@@ -1,33 +1,32 @@
-
-// Oczekiwanie na załadowanie całej treści dokumentu
+// Wait for the entire document to load
 document.addEventListener('DOMContentLoaded', async function () {
-    await updateAppointmentsStatus(); // Aktualizacja statusów wizyt
-    loadAppointments(undefined, true); // Ładowanie wizyt
+    await updateAppointmentsStatus(); // Update appointment statuses
+    loadAppointments(undefined, true); // Load appointments
 });
 
-// Funkcja, która anuluje wizytę
+// Function to cancel an appointment
 function cancelAppointment(appointmentId) {
     Swal.fire({
-        // Wykorzystanie biblioteki SweetAlert2 do wyświetlenia okna dialogowego
-        // Konfiguracja okna dialogowego
-        title: 'Czy na pewno chcesz odwołać wizytę?',
+        // Using SweetAlert2 library to display a confirmation dialog
+        // Configuring the dialog window
+        title: 'Are you sure you want to cancel this appointment?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Tak, odwołaj',
-        cancelButtonText: 'Nie'
+        confirmButtonText: 'Yes, cancel',
+        cancelButtonText: 'No'
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                // Wywołanie AJAX do anulowania wizyty
+                // AJAX call to cancel the appointment
                 url: '../../app/controllers/dentist_cancel_appointment.php',
                 type: 'POST',
                 data: { appointment_id: appointmentId },
                 success: function (response) {
                     const data = JSON.parse(response);
                     Swal.fire(
-                        'Odwołano!',
+                        'Cancelled!',
                         data.message,
                         'success'
                     );
@@ -35,8 +34,8 @@ function cancelAppointment(appointmentId) {
                 },
                 error: function (error) {
                     Swal.fire(
-                        'Błąd!',
-                        'Nie udało się odwołać wizyty.',
+                        'Error!',
+                        'Failed to cancel the appointment.',
                         'error'
                     );
                 }
@@ -45,41 +44,41 @@ function cancelAppointment(appointmentId) {
     });
 }
 
-// Funkcja, która zmienia status wizyty
+// Function to change appointment status
 function changeAppointmentStatus(appointmentId, newStatus) {
-    // Wywołanie alertu z biblioteki SweetAlert2
+    // Using SweetAlert2 library to display a confirmation dialog
     Swal.fire({
-        title: 'Zmień status wizyty',
-        text: `Potwierdź, że pacjent nie stawił się na wizytę`,
+        title: 'Change appointment status',
+        text: `Confirm that the patient did not show up for the appointment`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Tak, pacjenta nie było',
-        cancelButtonText: 'Nie'
+        confirmButtonText: 'Yes, patient did not show up',
+        cancelButtonText: 'No'
     }).then((result) => {
-        // Jeśli użytkownik potwierdził zmianę statusu
+        // If the user confirmed the status change
         if (result.isConfirmed) {
             $.ajax({
-                // Wysłanie zapytania AJAX do serwera
+                // AJAX request to change appointment status
                 url: '../../app/controllers/appointment_change_status.php',
                 type: 'POST',
                 data: { appointment_id: appointmentId, new_status: newStatus },
                 success: function (response) {
-                    // Jeśli zapytanie zakończyło się sukcesem to wyświetl komunikat
+                    // If the request was successful, display a message
                     const data = JSON.parse(response);
                     Swal.fire(
-                        'Zmieniono!',
+                        'Changed!',
                         data.message,
                         'success'
                     );
-                    loadAppointments(); // Ponowne załadowanie wizyt
+                    loadAppointments(); // Reload appointments
                 },
-                // Jeśli zapytanie zakończyło się błędem to wyświetl komunikat
+                // If there was an error, display an error message
                 error: function (error) {
                     Swal.fire(
-                        'Błąd!',
-                        'Nie udało się zmienić statusu wizyty.',
+                        'Error!',
+                        'Failed to change appointment status.',
                         'error'
                     );
                 }
@@ -88,33 +87,33 @@ function changeAppointmentStatus(appointmentId, newStatus) {
     });
 }
 
-// Zadeklarowanie zmiennej globalnej, która będzie przechowywać wszystkie wizyty
+// Declaration of a global variable to store all appointments
 var globalAppointments = [];
 
-// Funkcja, która ładuje wizyty
-function loadAppointments(filterStatus = 'scheduled', isInitialLoad = false, filterText = 'zaplanowane') {
-    document.getElementById('appointmentsHeader').textContent = 'Wizyty ' + filterText;
+// Function to load appointments
+function loadAppointments(filterStatus = 'scheduled', isInitialLoad = false, filterText = 'scheduled') {
+    document.getElementById('appointmentsHeader').textContent = 'Appointments ' + filterText;
     $.ajax({
-        // Wysłanie zapytania AJAX do serwera
+        // AJAX request to fetch dentist appointments
         url: '../../app/controllers/get_dentist_appointments.php',
         type: 'GET',
         success: function (response) {
-            // Jeśli zapytanie zakończyło się sukcesem to zapisz wizyty do zmiennej globalnej
+            // If the request was successful, save appointments to the global variable
             globalAppointments = JSON.parse(response);
             var statusToFilter = isInitialLoad ? 'scheduled' : filterStatus;
-            renderTable(globalAppointments, statusToFilter); // Wywołanie funkcji, która wyświetla wizyty w tabeli
+            renderTable(globalAppointments, statusToFilter); // Call function to display appointments in table
         },
         error: function (error) {
-            console.log('Błąd podczas ładowania wizyt', error);
+            console.log('Error loading appointments', error);
         }
     });
 }
 
-// Funkcja, która sortuje wizyty
+// Function to sort appointments
 function sortAppointments(sortKey) {
-    var sortedAppointments = [...globalAppointments]; // Skopiowanie wszystkich wizyt do nowej tablicy
+    var sortedAppointments = [...globalAppointments]; // Copy all appointments to a new array
     sortedAppointments.sort(function (a, b) {
-        // Sortowanie wizyt po dacie lub nazwisku pacjenta
+        // Sort appointments by date or patient's last name
         if (sortKey === 'date') {
             return new Date(a.appointment_date) - new Date(b.appointment_date);
         } else if (sortKey === 'patient') {
@@ -124,26 +123,26 @@ function sortAppointments(sortKey) {
     renderTable(sortedAppointments);
 }
 
-// Funkcja, która filtruje wizyty
+// Function to render appointments table based on status filter
 function renderTable(appointments, filterStatus = 'scheduled') {
     var html = '';
     appointments.forEach(function (appointment) {
-        // Jeśli filterStatus jest pusty lub równy statusowi wizyty, dodaj wizytę do tabeli
+        // If filterStatus is empty or matches appointment status, add appointment to table
         if (filterStatus === '' || appointment.status === filterStatus) {
             html += '<tr id="appointment-row-' + appointment.appointment_id + '">';
             html += '<td>' + appointment.appointment_date + '</td>';
             html += '<td>' + appointment.first_name + ' ' + appointment.last_name + '</td>';
             html += '<td>' + formatAppointmentStatus(appointment.status) + '</td>';
 
-            // Jeśli wizyta jest zaplanowana, dodaj przycisk do anulowania wizyty
+            // If appointment is scheduled, add button to cancel appointment
             if (appointment.status === 'scheduled') {
-                html += '<td><button class="btn btn-danger" onclick="cancelAppointment(' + appointment.appointment_id + ')">Odwołaj</button></td>';
+                html += '<td><button class="btn btn-danger" onclick="cancelAppointment(' + appointment.appointment_id + ')">Cancel</button></td>';
             }
-            // Jeśli wizyta jest wykonana, dodaj przycisk do zmiany statusu na "Pacjent nie stawił się"
+            // If appointment is completed, add button to change status to "Patient did not show up"
             else if (appointment.status === 'completed') {
-                html += '<td><button class="btn btn-warning" onclick="changeAppointmentStatus(' + appointment.appointment_id + ', \'no_show\')">Pacjent nie stawił się</button></td>';
+                html += '<td><button class="btn btn-warning" onclick="changeAppointmentStatus(' + appointment.appointment_id + ', \'no_show\')">Patient did not show up</button></td>';
             } else {
-                html += '<td></td>'; // Puste pole dla pozostałych statusów
+                html += '<td></td>'; // Empty cell for other statuses
             }
 
             html += '</tr>';
@@ -152,29 +151,28 @@ function renderTable(appointments, filterStatus = 'scheduled') {
     $('#appointments-table tbody').html(html);
 }
 
-
-// Funkcja pomocnicza do formatowania statusu wizyty
+// Helper function to format appointment status
 function formatAppointmentStatus(status) {
     switch (status) {
         case 'scheduled':
-            return 'Zaplanowana';
+            return 'Scheduled';
         case 'completed':
-            return 'Wykonana';
+            return 'Completed';
         case 'no_show':
-            return 'Pacjent nie stawił się';
+            return 'Patient did not show up';
         case 'cancelled_by_patient':
-            return 'Odwołana przez pacjenta';
+            return 'Cancelled by patient';
         case 'cancelled_by_dentist':
-            return 'Odwołana przez dentystę';
+            return 'Cancelled by dentist';
         default:
-            return 'Inny status';
+            return 'Other status';
     }
 }
 
-// Asynchroniczna funkcja, która aktualizuje statusy wizyt
+// Asynchronous function to update appointment statuses
 async function updateAppointmentsStatus() {
     try {
-        // Wysłanie zapytania do serwera
+        // Send a request to the server
         const response = await fetch('../../app/controllers/update_appointments_status.php', {
             method: 'POST',
             headers: {
@@ -182,17 +180,17 @@ async function updateAppointmentsStatus() {
             }
         });
 
-        const data = await response.json(); // Przypisanie odpowiedzi do zmiennej
+        const data = await response.json(); // Assign response to a variable
 
-        // Jeśli zapytanie zakończyło się sukcesem, wyświetl komunikat w konsoli
+        // If the request was successful, log the message to the console
         if (data.success) {
             console.log(data.message);
         } else {
-            // Jeśli zapytanie zakończyło się błędem, wyświetl komunikat w konsoli
-            console.error(data.error || 'Nieznany błąd');
+            // If there was an error, log the error message to the console
+            console.error(data.error || 'Unknown error');
         }
     } catch (error) {
-        // Jeśli wystąpił błąd podczas komunikacji z serwerem, wyświetl komunikat w konsoli
-        console.error('Wystąpił błąd podczas komunikacji z serwerem:', error);
+        // If there was an error communicating with the server, log the message to the console
+        console.error('Error communicating with the server:', error);
     }
 }

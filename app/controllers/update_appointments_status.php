@@ -1,29 +1,30 @@
 <?php
-session_start(); // Rozpoczęcie sesji
+session_start(); // Start session
 
-require_once '../../config/database.php'; // Dołączenie konfiguracji bazy danych
-require_once '../models/appointment.php'; // Dołączenie modelu 'appointment'
+require_once '../../config/database.php'; // Include database configuration
+require_once '../models/appointment.php'; // Include 'appointment' model
 
-// Sprawdzenie, czy metoda żądania to POST
+// Check if request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Sprawdzenie, czy użytkownik jest zalogowany i ma odpowiednią rolę (dentysta)
+    // Check if user is logged in and has the appropriate role (dentist)
     if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'dentist') {
-        echo json_encode(["error" => "Nieautoryzowany dostęp"]); // Zwrócenie błędu w przypadku braku uprawnień
+        echo json_encode(["error" => "Unauthorized access"]); // Return error for lack of permissions
         exit;
     }
 
     $database = new Database();
-    $db = $database->getConnection(); // Utworzenie połączenia z bazą danych
+    $db = $database->getConnection(); // Create database connection
 
     $appointments = new Appointment($db);
 
-    // Aktualizacja statusu wizyt na 'zakończony'
+    // Update appointment status to 'completed'
     $updatedRows = $appointments->updateStatusToCompleted();
 
-    // Zwrócenie informacji o liczbie zaktualizowanych wizyt
-    echo json_encode(['success' => true, 'message' => "Zaktualizowano status dla $updatedRows wizyt."]);
+    // Return information about the number of updated appointments
+    echo json_encode(['success' => true, 'message' => "Updated status for $updatedRows appointments."]);
 } else {
-    // Zwrócenie błędu, gdy metoda żądania nie jest POST
-    echo json_encode(['error' => 'Nieobsługiwana metoda żądania']);
+    // Return error if request method is not POST
+    echo json_encode(['error' => 'Unsupported request method']);
 }
+?>

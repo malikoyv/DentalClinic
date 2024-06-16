@@ -1,61 +1,62 @@
 <?php
-error_log("Formularz logowania został wysłany."); // Logowanie wysłania formularza
-error_log("Email: " . $_POST['email']); // Logowanie adresu email
+error_log("Login form submitted."); // Logging form submission
+error_log("Email: " . $_POST['email']); // Logging email address
 
-ini_set('display_errors', 1); // Włączenie wyświetlania błędów
-ini_set('display_startup_errors', 1); // Włączenie wyświetlania błędów uruchamiania
-error_reporting(E_ALL); // Ustawienie poziomu raportowania błędów
+ini_set('display_errors', 1); // Enable error display
+ini_set('display_startup_errors', 1); // Enable startup error display
+error_reporting(E_ALL); // Set error reporting level
 
-session_start(); // Rozpoczęcie nowej sesji lub wznowienie istniejącej
+session_start(); // Start a new session or resume existing session
 
-// Dołączenie plików konfiguracyjnych i modelu 'patient'
+// Include configuration files and the 'patient' model
 require_once '../../config/database.php';
 require_once '../models/patient.php';
 
 $database = new Database();
-$db = $database->getConnection(); // Utworzenie połączenia z bazą danych
+$db = $database->getConnection(); // Establish database connection
 
-$email = $password = ""; // Inicjalizacja zmiennych
-$email_err = $password_err = ""; // Inicjalizacja zmiennych błędów
+$email = $password = ""; // Initialize variables
+$email_err = $password_err = ""; // Initialize error variables
 
-// Przetwarzanie danych formularza po jego wysłaniu
+// Process form data upon submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Walidacja emaila
+    // Validate email
     if (empty(trim($_POST["email"]))) {
-        $email_err = "Proszę podać email.";
+        $email_err = "Please enter your email.";
     } else {
         $email = trim($_POST["email"]);
     }
 
-    // Walidacja hasła
+    // Validate password
     if (empty(trim($_POST["password"]))) {
-        $password_err = "Proszę podać hasło.";
+        $password_err = "Please enter your password.";
     } else {
         $password = trim($_POST["password"]);
     }
 
-    // Próba logowania po walidacji
+    // Attempt login after validation
     if (empty($email_err) && empty($password_err)) {
         $user = new Patient($db);
         if ($user->login($email, $password)) {
-            // Przekierowanie do panelu pacjenta
+            // Redirect to patient panel upon successful login
             header("location: ../views/patient_panel.php");
             exit;
         } else {
-            // Przekazanie błędu logowania do sesji i przekierowanie z powrotem do formularza logowania
-            $_SESSION['login_err'] = "Niepoprawny email lub hasło.";
+            // Pass login error to session and redirect back to login form
+            $_SESSION['login_err'] = "Incorrect email or password.";
             header("location: ../views/patient_login.php");
             exit;
         }
     } else {
-        // Przekazanie błędów walidacji do sesji
+        // Pass validation errors to session
         $_SESSION['email_err'] = $email_err;
         $_SESSION['password_err'] = $password_err;
         header("location: ../views/patient_login.php");
         exit;
     }
 
-    // Zamknięcie połączenia z bazą danych
+    // Close database connection
     unset($db);
 }
+?>

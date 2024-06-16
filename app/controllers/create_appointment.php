@@ -1,27 +1,27 @@
 <?php
-// Rozpoczęcie nowej sesji lub wznowienie istniejącej
+// Start a new session or resume an existing one
 session_start();
 
-// Wymagane pliki: konfiguracja bazy danych i model 'appointment'
+// Required files: database configuration and 'appointment' model
 require_once '../../config/database.php';
 require_once '../models/appointment.php';
 
-// Ustawienie nagłówka odpowiedzi na typ zawartości JSON
+// Set response header to JSON content type
 header('Content-Type: application/json');
 
-// Sprawdzenie, czy metoda żądania to POST
+// Check if the request method is POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Odczytanie danych JSON przesłanych w żądaniu
+    // Read JSON data sent in the request
     $data = json_decode(file_get_contents('php://input'), true);
 
-    // Sprawdzenie, czy użytkownik jest zalogowany
+    // Check if the user is logged in
     if (!isset($_SESSION['user_id'])) {
-        // Jeśli nie, zwróć błąd
-        echo json_encode(["status" => "error", "message" => "Musisz być zalogowany, aby dokonać rezerwacji."]);
+        // If not, return an error
+        echo json_encode(["status" => "error", "message" => "You must be logged in to make a reservation."]);
         exit;
     }
 
-    // Pobranie danych pacjenta, dentysty i daty wizyty z danych JSON
+    // Retrieve patient, dentist, and appointment date data from JSON
     $patient_id = $_SESSION['user_id'];
     $dentist_id = $data['dentist_id'] ?? null;
     
@@ -33,28 +33,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     try {
-        // Utworzenie nowego połączenia z bazą danych
+        // Create a new database connection
         $database = new Database();
         $db = $database->getConnection();
 
-        // Utworzenie nowego obiektu Appointment i ustawienie jego właściwości
+        // Create a new Appointment object and set its properties
         $appointment = new Appointment($db);
         $appointment->patient_id = $patient_id;
         $appointment->dentist_id = $dentist_id;
         $appointment->appointment_date = $appointment_date;
         $appointment->status = 'scheduled';
 
-        // Próba utworzenia nowej wizyty
+        // Attempt to create a new appointment
         if ($appointment->create()) {
-            // Zwrócenie pozytywnego komunikatu
-            echo json_encode(["status" => "success", "message" => "Wizyta została pomyślnie zarezerwowana!"]);
+            // Return a success message
+            echo json_encode(["status" => "success", "message" => "The appointment has been successfully booked!"]);
         } else {
-            // W przypadku niepowodzenia, zwrócenie błędu
-            echo json_encode(["status" => "error", "message" => "Nie udało się zarezerwować wizyty."]);
+            // In case of failure, return an error
+            echo json_encode(["status" => "error", "message" => "Failed to book the appointment."]);
         }
     } catch (PDOException $e) {
-        // Logowanie wyjątku i zwrócenie komunikatu o błędzie
-        error_log('Błąd przy tworzeniu wizyty: ' . $e->getMessage());
-        echo json_encode(["status" => "error", "message" => "Wystąpił błąd przy rezerwacji wizyty."]);
+        // Log the exception and return an error message
+        error_log('Error creating appointment: ' . $e->getMessage());
+        echo json_encode(["status" => "error", "message" => "An error occurred while booking the appointment."]);
     }
 }
+?>

@@ -1,25 +1,26 @@
 <?php
 session_start();
 
-// Dołączenie plików konfiguracyjnych bazy danych i modelu 'appointment'
+// Include database configuration and 'appointment' model files
 require_once '../../config/database.php';
 require_once '../models/appointment.php';
 
 if (!isset($_SESSION['user_id'])) {
-    // Jeśli użytkownik nie jest zalogowany, zwróć błąd
-    echo json_encode(["error" => "Nie jesteś zalogowany"]);
+    // If the user is not logged in, return an error
+    echo json_encode(["error" => "You are not logged in"]);
     exit;
 }
 
-// Utwórz nowy obiekt bazy danych i połączenie z bazą danych
+// Create a new database connection
 $database = new Database();
 $db = $database->getConnection();
 
-// Utwórz nowy obiekt 'appointment'
+// Create a new 'appointment' object
 $appointment = new Appointment($db);
 
-// Pobierz wizyty dla zalogowanego pacjenta
+// Get appointments for the logged-in patient
 $patientAppointments = $appointment->getPatientAppointments($_SESSION['user_id']);
 
-// Zwróć wizyty w formacie JSON
+// Return appointments in JSON format
 echo json_encode($patientAppointments);
+?>

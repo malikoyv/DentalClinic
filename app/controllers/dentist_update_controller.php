@@ -1,86 +1,87 @@
 <?php
-error_log("Formularz edycji danych dentysty został wysłany."); // Logowanie aktywności
+error_log("Dentist data edit form has been submitted."); // Log activity
 
-// Rozpoczęcie sesji i dołączenie plików konfiguracyjnych
+// Start session and include configuration files
 session_start();
 require_once '../../config/database.php';
 require_once '../models/dentist.php';
 
-// Sprawdzenie uprawnień użytkownika
+// Check user permissions
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'administrator') {
-    header("location: ../views/dentist_login.php"); // Przekierowanie do strony logowania, jeśli użytkownik nie jest administratorem
+    header("location: ../views/dentist_login.php"); // Redirect to login page if user is not an administrator
     exit;
 }
 
-// Utworzenie połączenia z bazą danych
+// Create a connection to the database
 $database = new Database();
 $db = $database->getConnection();
 $dentist = new Dentist($db);
 
-// Inicjalizacja zmiennych do przechowywania danych formularza
+// Initialize variables to store form data
 $firstName = $lastName = $email = $specialization = "";
 $update_err = "";
 
-// Obsługa żądania typu POST
+// Handle POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $dentist_id = isset($_POST['dentist_id']) ? trim($_POST['dentist_id']) : null; // Pobranie ID dentysty
+    $dentist_id = isset($_POST['dentist_id']) ? trim($_POST['dentist_id']) : null; // Get dentist ID
 
-    // Walidacja danych formularza
-    // Walidacja imienia
+    // Validate form data
+    // Validate first name
     if (empty(trim($_POST["first_name"]))) {
-        $update_err = "Proszę podać imię.";
+        $update_err = "Please enter a first name.";
     } else {
         $firstName = trim($_POST["first_name"]);
     }
 
-    // Walidacja nazwiska
+    // Validate last name
     if (empty(trim($_POST["last_name"]))) {
-        $update_err .= "\nProszę podać nazwisko.";
+        $update_err .= "\nPlease enter a last name.";
     } else {
         $lastName = trim($_POST["last_name"]);
     }
 
-    // Walidacja emaila
+    // Validate email
     if (empty(trim($_POST["email"]))) {
-        $update_err .= "\nProszę podać email.";
+        $update_err .= "\nPlease enter an email.";
     } else {
         $email = trim($_POST["email"]);
     }
 
-    // Walidacja specjalizacji
+    // Validate specialization
     if (empty(trim($_POST["specialization"]))) {
-        $update_err .= "\nProszę podać specjalizację.";
+        $update_err .= "\nPlease enter a specialization.";
     } else {
         $specialization = trim($_POST["specialization"]);
     }
 
-    // Jeśli nie ma błędów, przystąp do aktualizacji profilu
+    // If there are no errors, proceed with profile update
     if (empty($update_err)) {
-        // Sprawdzenie, czy email jest już używany
+        // Check if the email is already used
         if (!empty($email) && $dentist->isEmailUsedByAnotherDentist($dentist_id, $email)) {
-            $_SESSION['update_err'] = "Podany adres email jest używany przez innego dentystę.";
+            $_SESSION['update_err'] = "The provided email address is used by another dentist.";
             header("location: ../views/admin_panel.php");
             exit;
         }
 
-        // Próba aktualizacji profilu dentysty
+        // Attempt to update dentist profile
         if ($dentist->updateProfile($dentist_id, $firstName, $lastName, $email, $specialization)) {
-            $_SESSION['update_success'] = "Dane dentysty zostały pomyślnie zaktualizowane.";
+            $_SESSION['update_success'] = "Dentist data has been successfully updated.";
             header("location: ../views/admin_panel.php");
             exit;
         } else {
-            $_SESSION['update_err'] = "Wystąpił błąd podczas aktualizacji danych.";
+            $_SESSION['update_err'] = "An error occurred while updating the data.";
             header("location: ../views/admin_panel.php");
             exit;
         }
     } else {
-        // W przypadku błędów walidacji, przekazanie ich do sesji
+        // In case of validation errors, pass them to the session
         $_SESSION['update_err'] = $update_err;
         header("location: ../views/dentist_edit.php");
         exit;
     }
 }
 
-// Zamykanie połączenia z bazą danych
+// Close the database connection
 unset($db);
+?>

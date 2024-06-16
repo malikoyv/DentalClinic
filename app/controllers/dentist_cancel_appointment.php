@@ -1,28 +1,29 @@
 <?php
 session_start();
 
-// Wczytanie konfiguracji bazy danych i modelu appointment
+// Include database configuration and appointment model
 require_once '../../config/database.php';
 require_once '../models/appointment.php';
 
-// Sprawdzenie, czy żądanie jest typu POST i czy zawiera ID wizyty
+// Check if the request is of POST type and contains an appointment ID
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['appointment_id'])) {
-    $appointment_id = $_POST['appointment_id']; // Pobranie ID wizyty z danych POST
+    $appointment_id = $_POST['appointment_id']; // Get the appointment ID from POST data
 
-    // Utworzenie połączenia z bazą danych
+    // Create a connection to the database
     $database = new Database();
     $db = $database->getConnection();
 
-    // Utworzenie obiektu appointment i przypisanie mu ID wizyty
+    // Create an appointment object and assign it the appointment ID
     $appointment = new Appointment($db);
     $appointment->appointment_id = $appointment_id;
 
-    // Próba odwołania wizyty przez dentystę
+    // Attempt to cancel the appointment by the dentist
     if ($appointment->cancelByDentist()) {
-        // Jeśli się powiedzie, zwróć komunikat o sukcesie
-        echo json_encode(["message" => "Zaplanowana wizyta została odwołana"]);
+        // If successful, return a success message
+        echo json_encode(["message" => "Scheduled appointment has been cancelled"]);
     } else {
-        // W przeciwnym przypadku, zwróć komunikat o błędzie
-        echo json_encode(["message" => "Wystąpił błąd. Nie udało się odwołać wizyty"]);
+        // Otherwise, return an error message
+        echo json_encode(["message" => "An error occurred. Failed to cancel the appointment"]);
     }
 }
+?>

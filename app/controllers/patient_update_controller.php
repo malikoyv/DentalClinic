@@ -1,20 +1,20 @@
 <?php
 
-// Wyświetlenie informacji o błędach
+// Display error information
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Rozpoczęcie sesji
+// Start session
 session_start();
 
-// Dołączanie pliku konfiguracyjnego i klasy pacjenta
+// Include database configuration and patient class
 require_once '../../config/database.php';
 require_once '../models/patient.php';
 
-// Sprawdzenie, czy użytkownik jest zalogowany
+// Check if user is logged in
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("location: ../views/login.php"); // Przekierowanie do strony logowania, jeśli użytkownik nie jest zalogowany
+    header("location: ../views/login.php"); // Redirect to login page if user is not logged in
     exit;
 }
 
@@ -25,63 +25,64 @@ $patient = new Patient($db);
 $firstName = $lastName = $email = "";
 $update_err = "";
 
-// Przetwarzanie danych formularza
+// Process form data
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    // Walidacja imienia
+    // Validate first name
     if (empty(trim($_POST["first_name"]))) {
-        $update_err = "Proszę podać imię.";
+        $update_err = "Please enter your first name.";
     } else {
         $firstName = trim($_POST["first_name"]);
     }
 
-    // Walidacja nazwiska
+    // Validate last name
     if (empty(trim($_POST["last_name"]))) {
-        $update_err .= "\nProszę podać nazwisko.";
+        $update_err .= "\nPlease enter your last name.";
     } else {
         $lastName = trim($_POST["last_name"]);
     }
 
-    // Walidacja emaila
+    // Validate email
     if (empty(trim($_POST["email"]))) {
-        $update_err .= "\nProszę podać email.";
+        $update_err .= "\nPlease enter your email.";
     } else {
         $email = trim($_POST["email"]);
     }
 
-    // Aktualizacja profilu, jeśli nie ma błędów walidacji
+    // Update profile if there are no validation errors
     if (empty($update_err)) {
-        // Sprawdzenie, czy email nie jest już używany
+        // Check if email is already used by another patient
         if ($patient->isEmailUsedByAnotherPatient($_SESSION['user_id'], $email)) {
-            $_SESSION['update_err'] = "Podany adres email jest używany.";
+            $_SESSION['update_err'] = "The email address is already in use.";
             header("location: ../views/patient_panel.php");
             exit;
         }
 
-        // Próba aktualizacji profilu
+        // Attempt to update profile
         if ($patient->updateProfile($_SESSION['user_id'], $firstName, $lastName, $email)) {
-            // Aktualizacja danych w sesji i przekierowanie
+            // Update session data and redirect
             $_SESSION["first_name"] = $firstName;
             $_SESSION["last_name"] = $lastName;
             $_SESSION["email"] = $email;
 
-            // Ustawienie komunikatu o sukcesie
-            $_SESSION['update_success'] = "Dane zostały pomyślnie zaktualizowane.";
+            // Set success message
+            $_SESSION['update_success'] = "Profile information updated successfully.";
             header("location: ../views/patient_panel.php");
             exit;
         } else {
-            // Ustawienie komunikatu o błędzie
-            $_SESSION['update_err'] = "Wystąpił błąd podczas aktualizacji danych.";
+            // Set error message
+            $_SESSION['update_err'] = "Error updating profile information.";
             header("location: ../views/patient_panel.php");
             exit;
         }
     } else {
-        // Przekazanie błędów walidacji do sesji
+        // Pass validation errors to session
         $_SESSION['update_err'] = $update_err;
         header("location: ../views/patient_panel.php");
         exit;
     }
 }
 
-// Zamykanie połączenia z bazą danych
+// Close database connection
 unset($db);
+?>

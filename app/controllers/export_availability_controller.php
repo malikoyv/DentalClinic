@@ -1,43 +1,44 @@
 <?php
 session_start();
 
-// Dołączenie plików konfiguracyjnych bazy danych i modelu 'availability'
+// Include database configuration and 'availability' model files
 require_once '../../config/database.php';
 require_once '../models/availability.php';
 
-// Sprawdzenie, czy użytkownik jest zalogowany i ma uprawnienia dentysty
+// Check if the user is logged in and has dentist permissions
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'dentist') {
-    header("location: ../views/dentist_login.php"); // Przekierowanie do strony logowania, jeśli nie ma uprawnień
+    header("location: ../views/dentist_login.php"); // Redirect to the login page if the user doesn't have permissions
     exit;
 }
 
-// Utworzenie połączenia z bazą danych
+// Establish a database connection
 $database = new Database();
 $db = $database->getConnection();
 $availability = new Availability($db);
 
-// Pobranie danych dostępności dla zalogowanego dentysty
+// Retrieve availability data for the logged-in dentist
 $data = $availability->getAllAvailability($_SESSION['user_id']);
 
-// Ustawienie nagłówków HTTP dla eksportu danych w formacie CSV
+// Set HTTP headers for exporting data in CSV format
 header('Content-Type: text/csv; charset=utf-8');
-header('Content-Disposition: attachment; filename="dostepnosc.csv"');
+header('Content-Disposition: attachment; filename="availability.csv"');
 
-// Otworzenie strumienia wyjściowego dla pliku CSV
+// Open output stream for CSV file
 $output = fopen('php://output', 'w');
 
-// Definiowanie i zapis nagłówków kolumn w pliku CSV
+// Define and write column headers in the CSV file
 fputcsv($output, array('ID Dostępności', 'Dentysta ID', 'Czas Rozpoczęcia', 'Czas Zakończenia', 'Cena', 'Nazwa'));
 
-// Iteracja przez dane i zapis każdego wiersza do pliku CSV
+// Iterate through data and write each row to the CSV file
 array_walk($data, "fput");
 
-// Zamknięcie strumienia wyjściowego
+// Close the output stream
 fclose($output);
-exit; // Zakończenie skryptu
+exit; // End the script execution
 
 function fput($row){
-    // Otworzenie strumienia wyjściowego dla pliku CSV
+    // Open output stream for CSV file
     $output = fopen('php://output', 'w');
-    fputcsv($output, $row); // zapis wiersza do pliku csv
+    fputcsv($output, $row); // Write row to CSV file
 }
+?>

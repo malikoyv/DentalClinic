@@ -1,59 +1,60 @@
 <?php
 session_start();
 
-// Sprawdzenie, czy użytkownik jest zalogowany jako administrator
+// Check if the user is logged in as an administrator
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["role"] !== 'administrator') {
-    header("location: ../views/login.php"); // Przekierowanie do strony logowania, jeśli użytkownik nie ma uprawnień
+    header("location: ../views/login.php"); // Redirect to login page if the user does not have permissions
     exit;
 }
 
-// Dołączenie plików konfiguracyjnych i modeli
+// Include configuration and model files
 require_once '../../config/database.php';
 require_once '../models/dentist.php';
 
-// Utworzenie połączenia z bazą danych
+// Create a connection to the database
 $database = new Database();
 $db = $database->getConnection();
 $dentist = new Dentist($db);
 
-// Inicjalizacja zmiennych do przechowywania danych i ewentualnych błędów
+// Initialize variables to store data and potential errors
 $first_name = $last_name = $email = $password = $specialization = "";
 $first_name_err = $last_name_err = $email_err = $password_err = $specialization_err = "";
 
-// Obsługa żądania typu POST
+// Handle POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Pobieranie danych z formularza i usuwanie zbędnych spacji
+    // Get data from the form and trim unnecessary spaces
     $first_name = trim($_POST["first_name"]);
     $last_name = trim($_POST["last_name"]);
     $email = trim($_POST["email"]);
     $password = trim($_POST["password"]);
     $specialization = trim($_POST["specialization"]);
 
-    // Walidacja adresu e-mail
+    // Validate email address
     if ($dentist->isEmailExists($email)) {
-        $email_err = "Adres email jest już używany."; // Ustawienie błędu, jeśli email już istnieje
+        $email_err = "The email address is already in use."; // Set error if email already exists
     }
 
-    // Sprawdzenie, czy nie ma błędów walidacji
+    // Check if there are no validation errors
     if (empty($first_name_err) && empty($last_name_err) && empty($email_err) && empty($password_err) && empty($specialization_err)) {
-        // Ustawienie danych dentysty
+        // Set dentist data
         $dentist->first_name = $first_name;
         $dentist->last_name = $last_name;
         $dentist->email = $email;
         $dentist->password = $password;
         $dentist->specialization = $specialization;
 
-        // Próba utworzenia nowego rekordu dentysty
+        // Attempt to create a new dentist record
         if ($dentist->create()) {
-            $_SESSION['success_message'] = "Pomyślnie dodano nowego dentystę!";
-            header("location: ../views/admin_panel.php"); // Przekierowanie do panelu administracyjnego
+            $_SESSION['success_message'] = "Successfully added a new dentist!";
+            header("location: ../views/admin_panel.php"); // Redirect to the admin panel
             exit;
         } else {
-            echo "Wystąpił błąd podczas dodawania dentysty."; // Wyświetlenie błędu, jeśli nie uda się dodać dentysty
+            echo "An error occurred while adding the dentist."; // Display error if unable to add the dentist
         }
     } else {
-        $_SESSION['error_message'] = "Nie udało się dodać dentysty. " . $email_err; // Ustawienie komunikatu o błędzie
-        header("location: ../views/admin_panel.php"); // Przekierowanie do panelu administracyjnego
+        $_SESSION['error_message'] = "Failed to add the dentist. " . $email_err; // Set error message
+        header("location: ../views/admin_panel.php"); // Redirect to the admin panel
         exit;
     }
 }
+?>
