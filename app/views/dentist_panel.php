@@ -105,7 +105,7 @@ if (in_array($lastChar, ['a', 'e', 'i', 'o', 'u', 'y'])) {
                         <table class="table table-bordered table-hover" id="appointments-table">
                             <thead class="table-light">
                                 <tr>
-                                    <th class="align-middle">Appointment Date and Time <button class="btn btn-light btn-sm" onclick="sortAppointments('date')"><i class="bi bi-sort-down"></i></button></th>
+                                    <th class="align-middle">Date and Time <button class="btn btn-light btn-sm" onclick="sortAppointments('date')"><i class="bi bi-sort-down"></i></button></th>
                                     <th class="align-middle">Patient <button class="btn btn-light btn-sm" onclick="sortAppointments('patient')"><i class="bi bi-sort-alpha-down"></i></button></th>
                                     <th class="align-middle">Status</th>
                                     <th class="align-middle">Action</th>

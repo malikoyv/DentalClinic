@@ -1,7 +1,7 @@
 // Wait for the entire document to load
 document.addEventListener('DOMContentLoaded', async function () {
     await updateAppointmentsStatus(); // Update appointment statuses
-    loadAppointments(undefined, true); // Load appointments
+    loadAppointments('scheduled', true, 'scheduled'); // Load appointments
 });
 
 // Function to cancel an appointment
@@ -91,7 +91,7 @@ function changeAppointmentStatus(appointmentId, newStatus) {
 var globalAppointments = [];
 
 // Function to load appointments
-function loadAppointments(filterStatus = 'scheduled', isInitialLoad = false, filterText = 'scheduled') {
+function loadAppointments(filterStatus = 'scheduled', isInitialLoad = false, filterText = 'scheduled:') {
     document.getElementById('appointmentsHeader').textContent = 'Appointments ' + filterText;
     $.ajax({
         // AJAX request to fetch dentist appointments
