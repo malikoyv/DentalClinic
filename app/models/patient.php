@@ -143,32 +143,44 @@ class Patient extends User implements IPatientInterface
     }
 
     // Funkcja, która aktualizuje hasło pacjenta
-    public function changePassword($patientId, $currentPassword, $newPassword)
-    {
+    public function changePassword($patientId, $currentPassword, $newPassword) {
+        // Fetch current password hash
         $query = "SELECT password FROM " . $this->table_name . " WHERE patient_id = :patient_id";
         $stmt = $this->db->prepare($query);
         $stmt->bindParam(':patient_id', $patientId);
-        $stmt->execute();
-
+        
+        if (!$stmt->execute()) {
+            error_log("Error executing select query: " . implode(";", $stmt->errorInfo()));
+            return false;
+        }
+        
         if ($stmt->rowCount() == 1) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Verify current password
             if (password_verify($currentPassword, $row['password'])) {
+                // Hash the new password
                 $newHashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
                 $updateQuery = "UPDATE " . $this->table_name . " SET password = :new_password WHERE patient_id = :patient_id";
                 $updateStmt = $this->db->prepare($updateQuery);
                 $updateStmt->bindParam(':new_password', $newHashedPassword);
                 $updateStmt->bindParam(':patient_id', $patientId);
-
+                
                 if ($updateStmt->execute()) {
-                    error_log("Hasło zostało pomyślnie zaktualizowane.");
+                    error_log("Password successfully updated.");
                     return true;
                 } else {
-                    error_log("Błąd aktualizacji hasła: " . implode(";", $updateStmt->errorInfo()));
+                    error_log("Error executing update query: " . implode(";", $updateStmt->errorInfo()));
                 }
+            } else {
+                error_log("Current password does not match.");
             }
+        } else {
+            error_log("Patient not found or multiple entries for patient_id: " . $patientId);
         }
         return false;
     }
+
 
     // Walidacja emaila
     public function validateEmail($email)

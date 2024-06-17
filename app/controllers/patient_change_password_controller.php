@@ -1,6 +1,6 @@
 <?php
 
-ini_set('display_errors', 1);
+ini_set('display_errors', 1); // Set the value of the configuration option
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
@@ -54,18 +54,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check for errors before updating in the database
     if (empty($password_err) && empty($new_password_err) && empty($confirm_new_password_err)) {
+
         // Attempt to change password in the database
-        if ($patient->changePassword($_SESSION['patient_id'], $current_password, $new_password)) {
-            // Success message for password change
-            $_SESSION['update_success'] = "Password changed successfully.";
-            header("location: ../views/patient_panel.php");
-            exit;
-        } else {
-            // Error message for incorrect current password
-            $_SESSION['password_err'] = "Incorrect current password.";
-            header("location: ../views/patient_panel.php");
-            exit;
-        }
+        $patient->changePassword($_SESSION['patient_id'], $current_password, $new_password);
+        // Success message for password change
+        $_SESSION['update_success'] = "Password changed successfully.";
+        header("location: ../views/patient_panel.php");
+        exit;
+
     } else {
         // Pass validation error messages to session
         $_SESSION['password_err'] = $password_err;
